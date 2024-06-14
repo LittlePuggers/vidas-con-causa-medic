@@ -1,8 +1,24 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
+import { Product } from '../types/product';
+import { Typography } from '@mui/material';
 
+interface ProductListProps {
+  products: Product[];
+}
+
+const ProductList: React.FC<ProductListProps> = () => {
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'name', headerName: 'Nombre', width: 130 },
+  { field: 'name', headerName: 'Nombre', width: 130,
+    renderCell: (params) => (
+    <Link to={`/products/${params.row.id}`} style={{ textDecoration: 'none' }}>
+      <Typography variant="body2" color="primary">
+        {params.value}
+      </Typography>
+    </Link>
+  ),
+},
   { field: 'component', headerName: 'Componente', width: 130 },
   { field: 'concentration', headerName: 'Concentración', width: 90 },
   { field: 'category', headerName: 'Categoría', width: 130 },
@@ -22,7 +38,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
+const rows: Product[] = [
   { 
     id: 1, 
     component: 'Amoxicilina', 
@@ -61,7 +77,7 @@ const rows = [
     concentration: '1.5mg', 
     name: 'Meloxivet', 
     category: 'Dolor', 
-    stock: null, 
+    stock: 0, 
     bestUsedBy: '31/octubre/2025',
   }, { 
     id: 6, 
@@ -98,7 +114,6 @@ const rows = [
   },
 ];
 
-export default function DataTable() {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -115,3 +130,5 @@ export default function DataTable() {
     </div>
   );
 }
+
+export default ProductList;
