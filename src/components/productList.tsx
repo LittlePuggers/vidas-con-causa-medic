@@ -126,6 +126,9 @@ const rows: Product[] = [
         }}
         pageSizeOptions={[10, 20]}
         checkboxSelection
+        sx={{    
+          backgroundColor: 'whitesmoke'
+        }}
       />
     </div>
   );
