@@ -3,9 +3,10 @@ import './App.css';
 import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import ProductList from './components/productList';
-import ProductDetail from './components/productDetail';
+// import ProductDetail from './components/productDetail';
 import {Product} from './types/product';
 import Header from './components/Header';
+import {Medicine} from './components/Medicine';
 
 const products: Product[] = [
   {
@@ -100,8 +101,8 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<ProductList products={products} />} />
             <Route
-              path="/products/:id"
-              element={<ProductDetail products={products} />}
+              path="/medicine/:id"
+              element={<Medicine products={products} />}
             />
           </Routes>
         </Router>
