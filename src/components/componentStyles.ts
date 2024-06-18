@@ -1,8 +1,8 @@
 const gridStyles = {
+  backgroundColor: 'white',
   '& .MuiDataGrid-row:nth-of-type(odd)': {
     backgroundColor: 'whitesmoke',
   },
-  backgroundColor: 'white',
   '& .MuiDataGrid-cell': {
     fontWeight: '500',
     '& a': {
