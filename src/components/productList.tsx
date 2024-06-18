@@ -2,10 +2,13 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { Product } from '../types/product';
 import { Typography } from '@mui/material';
+import componentStyles from './componentStyles';
 
 interface ProductListProps {
   products: Product[];
 }
+
+const { gridStyles } = componentStyles;
 
 const ProductList: React.FC<ProductListProps> = () => {
 const columns: GridColDef[] = [
@@ -114,6 +117,8 @@ const rows: Product[] = [
   },
 ];
 
+
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -126,9 +131,7 @@ const rows: Product[] = [
         }}
         pageSizeOptions={[10, 20]}
         checkboxSelection
-        sx={{    
-          backgroundColor: 'whitesmoke'
-        }}
+        sx={gridStyles}
       />
     </div>
   );
