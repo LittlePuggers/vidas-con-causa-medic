@@ -7,6 +7,7 @@ import {Product} from '../types/product';
 import {useParams} from 'react-router-dom';
 import {Typography} from '@mui/material';
 import {BasicBreadcrumbs} from './BasicBreadcrumbs';
+import {DescriptionList} from './DescriptionList';
 
 interface MedicineProps {
   products: Product[];
@@ -18,6 +19,10 @@ const Item = styled(Paper)(({theme}) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  width: '100%',
 }));
 
 export const Medicine: React.FC<MedicineProps> = ({products}) => {
@@ -32,17 +37,20 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
     <>
       <Box sx={{flexGrow: 1}}>
         <BasicBreadcrumbs medicineName={product.name} />
+        <h2>{product.name}</h2>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <Item>xs=6 md=8 {product.name}</Item>
+          <Grid item xs={12} md={4} sx={{display: 'flex'}}>
+            <Item>
+              <DescriptionList medicineInfo={product} />
+            </Item>
           </Grid>
-          <Grid item xs={6} md={4}>
+          <Grid item xs={6} md={4} sx={{display: 'flex'}}>
             <Item>xs=6 md=4</Item>
           </Grid>
-          <Grid item xs={6} md={4}>
+          <Grid item xs={6} md={4} sx={{display: 'flex'}}>
             <Item>xs=6 md=4</Item>
           </Grid>
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={12} sx={{display: 'flex'}}>
             <Item>xs=6 md=8</Item>
           </Grid>
         </Grid>
