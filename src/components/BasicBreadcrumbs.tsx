@@ -3,7 +3,11 @@ import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 
-export const BasicBreadcrumbs = ({medicineName}) => {
+interface BasicBreadcrumbsProps {
+  medicineName: string;
+}
+
+export const BasicBreadcrumbs = ({medicineName}: BasicBreadcrumbsProps) => {
   return (
     <div role="presentation">
       <Breadcrumbs aria-label="breadcrumb">

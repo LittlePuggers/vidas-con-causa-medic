@@ -5,13 +5,24 @@ import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import {IconButton, Typography, styled} from '@mui/material';
+import {Product} from '../types/product';
+
+interface DescriptionListProps {
+  medicineInfo: Product;
+}
 
 const ItemText = styled(ListItemText)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'baseline',
   '& .MuiListItemText-primary': {
     fontSize: '1em',
+    color: 'navy',
+    paddingLeft: '1em',
   },
   '& .MuiListItemText-secondary': {
     fontSize: '1.2em',
+    paddingRight: '1em',
   },
 }));
 
@@ -19,9 +30,9 @@ const ItemText = styled(ListItemText)(() => ({
 //   marginRight: '0',
 // }));
 
-export const DescriptionList = ({medicineInfo}) => {
+export const DescriptionList = ({medicineInfo}: DescriptionListProps) => {
   return (
-    <Box sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+    <Box sx={{width: '100%', bgcolor: 'background.paper'}}>
       <nav aria-label="main mailbox folders">
         <List>
           <Typography color="text.primary">Descripción</Typography>

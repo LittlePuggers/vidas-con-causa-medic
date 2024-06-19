@@ -39,15 +39,12 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
         <BasicBreadcrumbs medicineName={product.name} />
         <h2>{product.name}</h2>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4} sx={{display: 'flex'}}>
+          <Grid item xs={12} sm={6} sx={{display: 'flex'}}>
             <Item>
               <DescriptionList medicineInfo={product} />
             </Item>
           </Grid>
-          <Grid item xs={6} md={4} sx={{display: 'flex'}}>
-            <Item>xs=6 md=4</Item>
-          </Grid>
-          <Grid item xs={6} md={4} sx={{display: 'flex'}}>
+          <Grid item xs={12} sm={6} sx={{display: 'flex'}}>
             <Item>xs=6 md=4</Item>
           </Grid>
           <Grid item xs={12} md={12} sx={{display: 'flex'}}>
