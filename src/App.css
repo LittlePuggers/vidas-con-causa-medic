@@ -1,3 +1,11 @@
+main {
+  --xs: 0px;
+  --sm: 600px;
+  --md: 900px;
+  --lg: 1200px;
+  --xl: 1536px;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -6,7 +14,7 @@
 }
 
 main {
-  padding: 0 2rem;
+  padding: 0 8rem;
   height: 100%;
   display: flex;
   align-items: center;
@@ -25,18 +33,9 @@ main {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media screen and (max-width: 830px) {
+  main {
+    padding: 0 2rem;
   }
 }
 
