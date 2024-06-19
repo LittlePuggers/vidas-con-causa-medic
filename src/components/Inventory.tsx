@@ -41,13 +41,18 @@ const TableCellBody = styled(TableCell)(() => ({
   padding: '0 1em',
 }));
 const FabOrange = styled(Fab)(() => ({
-  backgroundColor: 'rgb(251,133,2)',
+  backgroundColor: '#FB8502',
   color: 'white',
-  fontSize: '0.6em',
+  '&:hover': {
+    backgroundColor: '#E07702',
+  },
 }));
 const FabTeal = styled(Fab)(() => ({
-  backgroundColor: 'rgb(32,158,187)',
+  backgroundColor: '#209EBB',
   color: 'white',
+  '&:hover': {
+    backgroundColor: '#19829A',
+  },
 }));
 
 export const Inventory = () => {
