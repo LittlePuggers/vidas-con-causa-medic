@@ -8,6 +8,7 @@ import {useParams} from 'react-router-dom';
 import {Typography} from '@mui/material';
 import {BasicBreadcrumbs} from './BasicBreadcrumbs';
 import {DescriptionList} from './DescriptionList';
+import {Inventory} from './Inventory';
 
 interface MedicineProps {
   products: Product[];
@@ -45,10 +46,12 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
             </Item>
           </Grid>
           <Grid item xs={12} sm={6} sx={{display: 'flex'}}>
-            <Item>xs=6 md=4</Item>
+            <Item>xs=12 sm=6</Item>
           </Grid>
           <Grid item xs={12} md={12} sx={{display: 'flex'}}>
-            <Item>xs=6 md=8</Item>
+            <Item>
+              <Inventory></Inventory>
+            </Item>
           </Grid>
         </Grid>
       </Box>
