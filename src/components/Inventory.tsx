@@ -24,7 +24,10 @@ const BoxHead = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  padding: '0 2em',
+  padding: '0 1em 0 2em',
+  '& :last-child': {
+    marginTop: '2em',
+  },
 }));
 const TableCellHead = styled(TableCell)(() => ({
   fontSize: '1em',
