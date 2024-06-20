@@ -4,6 +4,8 @@ import {Product} from '../types/product';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
+import {useState} from 'react';
+import {FormDialog} from './NewMedicineForm';
 
 interface MedicTableProps {
   products: Product[];
@@ -139,14 +141,25 @@ const MedicTable: React.FC<MedicTableProps> = () => {
     },
   ];
 
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div style={{height: 400, width: '100%'}}>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
         <Typography color="text.primary">Tabla de Medicamentos</Typography>
-        <Fab variant="extended">
+        <Fab variant="extended" onClick={handleClickOpen}>
           <AutoAwesomeIcon sx={{mr: 1}} />
           Agregar nuevo
         </Fab>
+        <FormDialog open={open} handleClose={handleClose} />
       </BoxHead>
       <DataGrid
         rows={rows}
