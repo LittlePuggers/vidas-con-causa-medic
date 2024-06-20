@@ -2,11 +2,10 @@ import './App.css';
 
 import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import ProductList from './components/productList';
-// import ProductDetail from './components/productDetail';
 import {Product} from './types/product';
 import Header from './components/Header';
 import {Medicine} from './components/Medicine';
+import MedicTable from './components/MedicTable';
 
 const products: Product[] = [
   {
@@ -99,7 +98,7 @@ const App: React.FC = () => {
       <main>
         <Router>
           <Routes>
-            <Route path="/" element={<ProductList products={products} />} />
+            <Route path="/" element={<MedicTable products={products} />} />
             <Route
               path="/medicine/:id"
               element={<Medicine products={products} />}

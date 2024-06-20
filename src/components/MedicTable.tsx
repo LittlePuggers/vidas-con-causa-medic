@@ -1,16 +1,24 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {Link} from 'react-router-dom';
 import {Product} from '../types/product';
-import {Typography} from '@mui/material';
+import {Box, Fab, Typography, styled} from '@mui/material';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
 
-interface ProductListProps {
+interface MedicTableProps {
   products: Product[];
 }
 
 const {gridStyles} = componentStyles;
 
-const ProductList: React.FC<ProductListProps> = () => {
+const BoxHead = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '1em 2em',
+}));
+
+const MedicTable: React.FC<MedicTableProps> = () => {
   const columns: GridColDef[] = [
     {field: 'id', headerName: 'ID', width: 70},
     {
@@ -133,6 +141,13 @@ const ProductList: React.FC<ProductListProps> = () => {
 
   return (
     <div style={{height: 400, width: '100%'}}>
+      <BoxHead sx={{'& > :not(style)': {m: 1}}}>
+        <Typography color="text.primary">Tabla de Medicamentos</Typography>
+        <Fab variant="extended">
+          <AutoAwesomeIcon sx={{mr: 1}} />
+          Agregar nuevo
+        </Fab>
+      </BoxHead>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -149,4 +164,4 @@ const ProductList: React.FC<ProductListProps> = () => {
   );
 };
 
-export default ProductList;
+export default MedicTable;
