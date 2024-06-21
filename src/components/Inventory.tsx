@@ -9,6 +9,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import EditIcon from '@mui/icons-material/Edit';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {Box, Fab, Typography, styled} from '@mui/material';
+import {NewInstanceForm} from './NewInstanceForm';
+import {useState} from 'react';
+
+interface InventoryProps {
+  medicineName2: string;
+}
 
 function createData(expiration: string, qty: string, btns: number) {
   return {expiration, qty, btns};
@@ -58,15 +64,30 @@ const FabTeal = styled(Fab)(() => ({
   },
 }));
 
-export const Inventory = () => {
+export const Inventory = ({medicineName2}: InventoryProps) => {
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
         <Typography color="text.primary">Inventario</Typography>
-        <Fab variant="extended">
+        <Fab variant="extended" onClick={handleClickOpen}>
           <AutoAwesomeIcon sx={{mr: 1}} />
           Nueva instancia
         </Fab>
+        <NewInstanceForm
+          open={open}
+          handleClose={handleClose}
+          medicineName2={medicineName2}
+        />
       </BoxHead>
       <TableContainer>
         <Table sx={{minWidth: 650}} aria-label="simple table">

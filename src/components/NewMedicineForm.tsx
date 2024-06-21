@@ -7,12 +7,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-interface FormDialogProps {
+interface NewMedicineFormProps {
   open: boolean;
   handleClose: () => void;
 }
 
-export const FormDialog = ({open, handleClose}: FormDialogProps) => {
+export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
   return (
     <Dialog
       open={open}

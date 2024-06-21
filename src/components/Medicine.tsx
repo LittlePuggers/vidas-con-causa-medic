@@ -50,7 +50,7 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
           </Grid>
           <Grid item xs={12} md={12} sx={{display: 'flex'}}>
             <Item>
-              <Inventory></Inventory>
+              <Inventory medicineName2={product.name}></Inventory>
             </Item>
           </Grid>
         </Grid>
