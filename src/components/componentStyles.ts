@@ -21,3 +21,14 @@ const componentStyles = {
 };
 
 export default componentStyles;
+
+export const dialogTitleStyles = {
+  paddingLeft: '0.2em',
+  '& p': {
+    margin: 0,
+    fontSize: '0.8em',
+  },
+  '& h3': {
+    margin: 0,
+  },
+};
