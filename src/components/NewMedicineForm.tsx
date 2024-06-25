@@ -8,7 +8,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {dialogTitleStyles} from './componentStyles';
 import styled from '@emotion/styled';
-import {Box} from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import {SetStateAction, useState} from 'react';
 
 interface NewMedicineFormProps {
@@ -21,6 +28,29 @@ const DialogContentStyledText = styled(DialogContentText)(() => ({
   fontWeight: 400,
   color: 'navy',
 }));
+const RowBox = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+}));
+
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
+
+const categories = [
+  'Antibiótico',
+  'Dolor',
+  'Parasiticida',
+  'Articulaciones',
+  'Oftálmico',
+];
 
 export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
   const [name, setName] = useState('');
@@ -28,9 +58,15 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
     setName(event.target.value);
   };
 
-  const [category, setCategory] = useState('');
-  const handleCategory = (event: {target: {value: SetStateAction<string>}}) => {
-    setCategory(event.target.value);
+  const [category, setCategory] = React.useState<string[]>([]);
+  const handleCategory = (event: SelectChangeEvent<typeof category>) => {
+    const {
+      target: {value},
+    } = event;
+    setCategory(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
   };
 
   const [components, setComponents] = useState('');
@@ -45,6 +81,11 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
     target: {value: SetStateAction<string>};
   }) => {
     setConcentration(event.target.value);
+  };
+
+  const [concUnit, setConcUnit] = useState('');
+  const handleConcUnit = (event: {target: {value: SetStateAction<string>}}) => {
+    setConcUnit(event.target.value);
   };
 
   const save = () => {
@@ -79,12 +120,23 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
           <TextField id="name" value={name} fullWidth onChange={handleName} />
 
           <DialogContentStyledText>Categoría</DialogContentStyledText>
-          <TextField
+          <Select
+            labelId="demo-multiple-checkbox-label"
             id="category"
+            multiple
             value={category}
-            fullWidth
             onChange={handleCategory}
-          />
+            renderValue={(selected) => selected.join(', ')}
+            fullWidth
+          >
+            {categories.map((categoryEl) => (
+              <MenuItem key={categoryEl} value={categoryEl}>
+                <Checkbox checked={category.indexOf(categoryEl) > -1} />
+                <ListItemText primary={categoryEl} />
+              </MenuItem>
+            ))}
+          </Select>
+
           <DialogContentStyledText>Componentes</DialogContentStyledText>
           <TextField
             id="components"
@@ -92,13 +144,32 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
             fullWidth
             onChange={handleComponents}
           />
-          <DialogContentStyledText>Concentración</DialogContentStyledText>
-          <TextField
-            id="concentration"
-            value={concentration}
-            fullWidth
-            onChange={handleConcentration}
-          />
+          <RowBox>
+            <Box>
+              <DialogContentStyledText>Concentración</DialogContentStyledText>
+              <TextField
+                id="concentration"
+                value={concentration}
+                type="number"
+                sx={{width: '75px'}}
+                onChange={handleConcentration}
+              />
+            </Box>
+            <Box>
+              <DialogContentStyledText sx={{textAlign: 'end'}}>
+                Unidad
+              </DialogContentStyledText>
+              <Select
+                id="concUnit"
+                value={concUnit}
+                onChange={handleConcUnit}
+                sx={{width: '125px'}}
+              >
+                <MenuItem value={'mg'}>Miligramos</MenuItem>
+                <MenuItem value={'ml'}>Mililitros</MenuItem>
+              </Select>
+            </Box>
+          </RowBox>
         </Box>
       </DialogContent>
       <DialogActions>
