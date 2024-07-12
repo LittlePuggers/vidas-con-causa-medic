@@ -4,11 +4,22 @@ import {Product} from '../types/product';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {NewMedicineForm} from './NewMedicineForm';
+import {
+  getMedicines,
+  // createMedicine,
+  // updateMedicine,
+  // deleteMedicine,
+} from '../api.ts';
 
 interface MedicTableProps {
   products: Product[];
+}
+
+interface Medicine {
+  id: number;
+  name: string;
 }
 
 const {gridStyles} = componentStyles;
@@ -21,6 +32,18 @@ const BoxHead = styled(Box)(() => ({
 }));
 
 const MedicTable: React.FC<MedicTableProps> = () => {
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+
+  useEffect(() => {
+    loadMedicines();
+  }, []);
+
+  const loadMedicines = async () => {
+    const response = await getMedicines();
+    setMedicines(response.data);
+    console.log(response.data);
+  };
+
   const columns: GridColDef[] = [
     {field: 'id', headerName: 'ID', width: 70},
     {
@@ -38,7 +61,7 @@ const MedicTable: React.FC<MedicTableProps> = () => {
         </Link>
       ),
     },
-    {field: 'component', headerName: 'Componente', width: 130},
+    {field: 'components', headerName: 'Componente', width: 130},
     {field: 'concentration', headerName: 'Concentración', width: 90},
     {field: 'category', headerName: 'Categoría', width: 130},
     {
@@ -50,10 +73,7 @@ const MedicTable: React.FC<MedicTableProps> = () => {
     {
       field: 'bestUsedBy',
       headerName: 'Próximo a vencer',
-      // description: 'This column has a value getter and is not sortable.',
-      // sortable: false,
       width: 160,
-      // valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
     },
   ];
 
@@ -162,7 +182,7 @@ const MedicTable: React.FC<MedicTableProps> = () => {
         <NewMedicineForm open={open} handleClose={handleClose} />
       </BoxHead>
       <DataGrid
-        rows={rows}
+        rows={medicines}
         columns={columns}
         initialState={{
           pagination: {
