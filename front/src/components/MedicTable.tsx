@@ -37,7 +37,7 @@ const MedicTable: React.FC<MedicTableProps> = () => {
 
   useEffect(() => {
     loadMedicines();
-  }, []);
+  }, [medicines]);
 
   const loadMedicines = async () => {
     const response = await getMedicines();
