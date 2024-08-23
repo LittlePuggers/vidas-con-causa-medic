@@ -88,6 +88,11 @@ const MedicTable: React.FC<MedicTableProps> = () => {
     setOpen(false);
   };
 
+  const handleFormSubmit = async () => {
+    await loadMedicines();
+    setOpen(false);
+  };
+
   return (
     <div style={{height: 400, width: '100%'}}>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
@@ -96,7 +101,11 @@ const MedicTable: React.FC<MedicTableProps> = () => {
           <AutoAwesomeIcon sx={{mr: 1}} />
           Agregar nuevo
         </Fab>
-        <NewMedicineForm open={open} handleClose={handleClose} />
+        <NewMedicineForm
+          open={open}
+          handleClose={handleClose}
+          onSubmit={handleFormSubmit}
+        />
       </BoxHead>
       <Box>
         <SearchBar></SearchBar>

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,19 +7,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {dialogTitleStyles} from './componentStyles';
 import styled from '@emotion/styled';
-import {
-  Box,
-  Checkbox,
-  ListItemText,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
-import {SetStateAction, useState} from 'react';
+import {Box, Checkbox, ListItemText, MenuItem, Select} from '@mui/material';
+import {useState} from 'react';
+import {createMedicine} from '../api';
 
 interface NewMedicineFormProps {
   open: boolean;
   handleClose: () => void;
+  onSubmit: () => {};
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -33,17 +27,6 @@ const RowBox = styled(Box)(() => ({
   justifyContent: 'space-between',
 }));
 
-// const ITEM_HEIGHT = 48;
-// const ITEM_PADDING_TOP = 8;
-// const MenuProps = {
-//   PaperProps: {
-//     style: {
-//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-//       width: 250,
-//     },
-//   },
-// };
-
 const categories = [
   'Antibiótico',
   'Dolor',
@@ -53,45 +36,55 @@ const categories = [
 ];
 
 export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
-  const [name, setName] = useState('');
-  const handleName = (event: {target: {value: SetStateAction<string>}}) => {
-    setName(event.target.value);
+  const [newMedicineData, setNewMedicineData] = useState({
+    name: '',
+    category: '',
+    components: '',
+    concNumber: 0,
+    concUnit: '',
+  });
+
+  const handleChange = (e: {target: {name: any; value: any}}) => {
+    const {name, value} = e.target;
+    setNewMedicineData({...newMedicineData, [name]: value});
   };
 
-  const [category, setCategory] = React.useState<string[]>([]);
-  const handleCategory = (event: SelectChangeEvent<typeof category>) => {
-    const {
-      target: {value},
-    } = event;
-    setCategory(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const handleCategoryChange = (event: {target: {value: any}}) => {
+    const value = event.target.value;
+    setSelectedCategories(
+      typeof value === 'string' ? value.split(', ') : value
     );
   };
 
-  const [components, setComponents] = useState('');
-  const handleComponents = (event: {
-    target: {value: SetStateAction<string>};
-  }) => {
-    setComponents(event.target.value);
-  };
-
-  const [concentration, setConcentration] = useState('');
-  const handleConcentration = (event: {
-    target: {value: SetStateAction<string>};
-  }) => {
-    setConcentration(event.target.value);
-  };
-
-  const [concUnit, setConcUnit] = useState('');
-  const handleConcUnit = (event: {target: {value: SetStateAction<string>}}) => {
-    setConcUnit(event.target.value);
-  };
-
-  const save = () => {
-    console.log('save');
-    console.log(name);
-    console.log(category);
+  const handleSubmit = async (e: {preventDefault: () => void}) => {
+    e.preventDefault();
+    const newMedicineData2 = {
+      name: newMedicineData.name,
+      components: newMedicineData.components,
+      concentration:
+        newMedicineData.concNumber + ' ' + newMedicineData.concUnit,
+      category: selectedCategories.join(', '),
+      stock: 0,
+      bestUsedBy: '',
+    };
+    console.log(newMedicineData2);
+    try {
+      const response = await createMedicine(newMedicineData2);
+      console.log('Medicine saved:', response.data);
+      setNewMedicineData({
+        name: '',
+        category: '',
+        components: '',
+        concNumber: 0,
+        concUnit: '',
+      });
+      setSelectedCategories([]);
+      handleClose();
+    } catch (error) {
+      console.error('Error saving medicine: ', error);
+    }
   };
 
   return (
@@ -101,14 +94,7 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
       PaperProps={{
         component: 'form',
         sx: {padding: '1rem 4rem', border: '2px solid #209EBB'},
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          const email = formJson.email;
-          console.log(email);
-          handleClose();
-        },
+        onSubmit: handleSubmit,
       }}
     >
       <DialogTitle sx={dialogTitleStyles}>
@@ -117,21 +103,30 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
       <DialogContent>
         <Box>
           <DialogContentStyledText>Nombre</DialogContentStyledText>
-          <TextField id="name" value={name} fullWidth onChange={handleName} />
+          <TextField
+            id="name"
+            name="name"
+            value={newMedicineData.name}
+            fullWidth
+            onChange={handleChange}
+          />
 
           <DialogContentStyledText>Categoría</DialogContentStyledText>
           <Select
             labelId="demo-multiple-checkbox-label"
             id="category"
             multiple
-            value={category}
-            onChange={handleCategory}
+            value={selectedCategories}
+            onChange={handleCategoryChange}
             renderValue={(selected) => selected.join(', ')}
             fullWidth
+            displayEmpty
           >
             {categories.map((categoryEl) => (
               <MenuItem key={categoryEl} value={categoryEl}>
-                <Checkbox checked={category.indexOf(categoryEl) > -1} />
+                <Checkbox
+                  checked={selectedCategories.indexOf(categoryEl) > -1}
+                />
                 <ListItemText primary={categoryEl} />
               </MenuItem>
             ))}
@@ -140,19 +135,22 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
           <DialogContentStyledText>Componentes</DialogContentStyledText>
           <TextField
             id="components"
-            value={components}
+            name="components"
+            value={newMedicineData.components}
             fullWidth
-            onChange={handleComponents}
+            onChange={handleChange}
           />
+
           <RowBox>
             <Box>
               <DialogContentStyledText>Concentración</DialogContentStyledText>
               <TextField
-                id="concentration"
-                value={concentration}
+                id="concNumber"
+                name="concNumber"
+                value={newMedicineData.concNumber}
                 type="number"
                 sx={{width: '75px'}}
-                onChange={handleConcentration}
+                onChange={handleChange}
               />
             </Box>
             <Box>
@@ -161,8 +159,9 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
               </DialogContentStyledText>
               <Select
                 id="concUnit"
-                value={concUnit}
-                onChange={handleConcUnit}
+                name="concUnit"
+                value={newMedicineData.concUnit}
+                onChange={handleChange}
                 sx={{width: '125px'}}
               >
                 <MenuItem value={'mg'}>Miligramos</MenuItem>
@@ -177,7 +176,7 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
           Cancelar
         </Button>
         <Button
-          onClick={save}
+          onClick={handleSubmit}
           type="submit"
           variant="contained"
           sx={{

@@ -8,6 +8,11 @@ const api = axios.create({
 interface Medicine {
   id: number;
   name: string;
+  component: string;
+  concentration: string;
+  category: string;
+  stock: number;
+  bestUsedBy: string;
 }
 
 interface Instance {
@@ -17,9 +22,11 @@ interface Instance {
 
 export const getMedicines = (): Promise<AxiosResponse<Medicine[]>> =>
   api.get('/medicines');
+
 export const createMedicine = (
   data: Partial<Medicine>
 ): Promise<AxiosResponse<Medicine>> => api.post('/medicines', data);
+
 export const updateMedicine = (
   id: number,
   data: Partial<Medicine>

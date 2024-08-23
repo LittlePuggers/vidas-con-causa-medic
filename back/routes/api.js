@@ -16,4 +16,33 @@ router.get('/medicines', async (req, res) => {
   }
 });
 
+// Save new medicine
+router.post('/medicines', async (req, res) => {
+  const {
+    name,
+    components,
+    category,
+    concentration,
+    bestUsedBy,
+    stock,
+    // instances,
+  } = req.body;
+  try {
+    const newMedicine = await prisma.medicine.create({
+      data: {
+        name,
+        components,
+        category,
+        concentration,
+        bestUsedBy,
+        stock,
+        // instances,
+      },
+    });
+    res.status(201).json(newMedicine);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+});
+
 export default router;
