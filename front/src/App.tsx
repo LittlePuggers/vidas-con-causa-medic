@@ -6,19 +6,14 @@ import {Medicine as MedicineType} from './types/Medicine';
 import Header from './components/Header';
 import {Medicine} from './components/Medicine';
 import MedicTable from './components/MedicTable';
-import {getMedicines} from './api';
+import {loadMedicines} from './utils';
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<MedicineType[]>([]);
 
   useEffect(() => {
-    loadProducts();
-  }, [products]);
-
-  const loadProducts = async () => {
-    const response = await getMedicines();
-    setProducts(response.data);
-  };
+    loadMedicines(setProducts);
+  }, []);
 
   return (
     <>
@@ -26,7 +21,7 @@ const App: React.FC = () => {
       <main>
         <Router>
           <Routes>
-            <Route path="/" element={<MedicTable products={products} />} />
+            <Route path="/" element={<MedicTable medicines={products} />} />
             <Route
               path="/medicine/:id"
               element={<Medicine products={products} />}

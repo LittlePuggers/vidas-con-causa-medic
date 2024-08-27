@@ -1,26 +1,15 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {Link} from 'react-router-dom';
-import {Product} from '../types/Medicine.ts';
+import {Medicine as MedicineType} from '../types/Medicine.ts';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
 import {SearchBar} from './SearchBar.tsx';
 import {useState, useEffect} from 'react';
 import {NewMedicineForm} from './NewMedicineForm';
-import {
-  getMedicines,
-  // createMedicine,
-  // updateMedicine,
-  // deleteMedicine,
-} from '../api.ts';
 
 interface MedicTableProps {
-  products: Product[];
-}
-
-interface Medicine {
-  id: number;
-  name: string;
+  medicines: MedicineType[];
 }
 
 const {gridStyles} = componentStyles;
@@ -32,18 +21,10 @@ const BoxHead = styled(Box)(() => ({
   padding: '1em 2em',
 }));
 
-const MedicTable: React.FC<MedicTableProps> = () => {
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
-
+const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
   useEffect(() => {
-    loadMedicines();
-  }, [medicines]);
-
-  const loadMedicines = async () => {
-    const response = await getMedicines();
-    setMedicines(response.data);
-    console.log(response.data);
-  };
+    console.log(medicines);
+  }, []);
 
   const columns: GridColDef[] = [
     {field: 'id', headerName: 'ID', width: 70},
@@ -89,7 +70,7 @@ const MedicTable: React.FC<MedicTableProps> = () => {
   };
 
   const handleFormSubmit = async () => {
-    await loadMedicines();
+    // await loadMedicines(setMedicines);
     setOpen(false);
   };
 

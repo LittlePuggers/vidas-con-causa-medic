@@ -5,10 +5,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import {IconButton, Typography, styled} from '@mui/material';
-import {Product} from '../types/Medicine';
+import {Medicine as MedicineType} from '../types/Medicine';
 
 interface DescriptionListProps {
-  medicineInfo: Product;
+  medicineInfo: MedicineType;
 }
 
 const ItemText = styled(ListItemText)(() => ({
@@ -49,7 +49,7 @@ export const DescriptionList = ({medicineInfo}: DescriptionListProps) => {
           <ListItem disablePadding>
             <ItemText
               primary="Componentes"
-              secondary={medicineInfo.component}
+              secondary={medicineInfo.components}
             />
             <IconButton edge="end" aria-label="edit" sx={{marginRight: 0}}>
               <EditIcon />

@@ -3,7 +3,7 @@ import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import {Product} from '../types/Medicine';
+import {Medicine as MedicineType} from '../types/Medicine';
 import {useParams} from 'react-router-dom';
 import {Typography} from '@mui/material';
 import {BasicBreadcrumbs} from './BasicBreadcrumbs';
@@ -11,7 +11,7 @@ import {DescriptionList} from './DescriptionList';
 import {Inventory} from './Inventory';
 
 interface MedicineProps {
-  products: Product[];
+  products: MedicineType[];
 }
 
 const Item = styled(Paper)(({theme}) => ({
