@@ -9,6 +9,8 @@ import {Typography} from '@mui/material';
 import {BasicBreadcrumbs} from './BasicBreadcrumbs';
 import {DescriptionList} from './DescriptionList';
 import {Inventory} from './Inventory';
+import {loadInstances} from '../utils';
+import {useEffect} from 'react';
 
 interface MedicineProps {
   products: MedicineType[];
@@ -27,8 +29,13 @@ const Item = styled(Paper)(({theme}) => ({
 }));
 
 export const Medicine: React.FC<MedicineProps> = ({products}) => {
-  const {id} = useParams<{id: string}>();
+  const {id} = useParams();
+  const numberID = id ? +id : 0;
   const product = products.find((product) => product.id.toString() === id);
+
+  useEffect(() => {
+    loadInstances(numberID);
+  }, []);
 
   if (!product) {
     return <Typography variant="h5">Product not found</Typography>;

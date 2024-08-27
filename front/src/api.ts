@@ -24,8 +24,9 @@ export const updateMedicine = (
 export const deleteMedicine = (id: number): Promise<void> =>
   api.delete(`/medicines/${id}`);
 
-export const getInstances = (): Promise<AxiosResponse<Instance[]>> =>
-  api.get('/instances');
+export const getInstances = (id: number): Promise<AxiosResponse<Instance[]>> =>
+  api.get(`/medicines/${id}/items`);
+
 export const createInstance = (
   data: Partial<Instance>
 ): Promise<AxiosResponse<Instance>> => api.post('/instances', data);

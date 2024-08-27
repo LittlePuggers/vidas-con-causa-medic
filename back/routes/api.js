@@ -4,7 +4,7 @@ import prisma from '../prisma.js'; // adjust the path as necessary
 
 const router = Router();
 
-// Get all items
+// Get all medicines
 router.get('/medicines', async (req, res) => {
   try {
     const medicines = await prisma.medicine.findMany();
@@ -12,7 +12,9 @@ router.get('/medicines', async (req, res) => {
     res.json(medicines);
   } catch (error) {
     console.error(error);
-    res.status(500).json({error: 'An error occurred while fetching items.'});
+    res
+      .status(500)
+      .json({error: 'An error occurred while fetching medicines.'});
   }
 });
 
@@ -42,6 +44,23 @@ router.post('/medicines', async (req, res) => {
     res.status(201).json(newMedicine);
   } catch (error) {
     res.status(400).json({error: error.message});
+  }
+});
+
+// Get instances of medicine
+router.get('/medicines/:id/items', async (req, res) => {
+  const medicineId = parseInt(req.params.id);
+  try {
+    const items = await prisma.instance.findMany({
+      where: {
+        medicineId: medicineId,
+      },
+    });
+    console.log(items);
+    res.json(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({error: 'An error occurred while fetching items.'});
   }
 });
 
