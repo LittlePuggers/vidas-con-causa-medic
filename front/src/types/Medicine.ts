@@ -1,4 +1,4 @@
-export interface Product {
+export interface Medicine {
   id: number;
   name: string;
   components: string;

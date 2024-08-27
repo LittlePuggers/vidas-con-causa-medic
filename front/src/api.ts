@@ -1,19 +1,9 @@
 import axios, {AxiosResponse} from 'axios';
+import {Medicine} from './types/Medicine';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
 });
-
-// Define types for the response data
-interface Medicine {
-  id: number;
-  name: string;
-  component: string;
-  concentration: string;
-  category: string;
-  stock: number;
-  bestUsedBy: string;
-}
 
 interface Instance {
   id: number;

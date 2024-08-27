@@ -3,7 +3,7 @@ import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import {Product} from '../types/product';
+import {Product} from '../types/Medicine';
 import {useParams} from 'react-router-dom';
 import {Typography} from '@mui/material';
 import {BasicBreadcrumbs} from './BasicBreadcrumbs';

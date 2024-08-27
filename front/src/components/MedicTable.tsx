@@ -1,6 +1,6 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {Link} from 'react-router-dom';
-import {Product} from '../types/product';
+import {Product} from '../types/Medicine.ts';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';

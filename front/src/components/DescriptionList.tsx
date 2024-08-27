@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import {IconButton, Typography, styled} from '@mui/material';
-import {Product} from '../types/product';
+import {Product} from '../types/Medicine';
 
 interface DescriptionListProps {
   medicineInfo: Product;
