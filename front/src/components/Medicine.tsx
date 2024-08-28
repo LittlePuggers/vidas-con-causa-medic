@@ -10,7 +10,8 @@ import {BasicBreadcrumbs} from './BasicBreadcrumbs';
 import {DescriptionList} from './DescriptionList';
 import {Inventory} from './Inventory';
 import {loadInstances} from '../utils';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+import {Instance} from '../types/Instance';
 
 interface MedicineProps {
   products: MedicineType[];
@@ -32,9 +33,10 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
   const {id} = useParams();
   const numberID = id ? +id : 0;
   const product = products.find((product) => product.id.toString() === id);
+  const [inventory, setInventory] = useState<Instance[]>([]);
 
   useEffect(() => {
-    loadInstances(numberID);
+    loadInstances(numberID, setInventory);
   }, []);
 
   if (!product) {
@@ -57,7 +59,10 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
           </Grid>
           <Grid item xs={12} md={12} sx={{display: 'flex'}}>
             <Item>
-              <Inventory medicineName2={product.name}></Inventory>
+              <Inventory
+                medicineName2={product.name}
+                inventory={inventory}
+              ></Inventory>
             </Item>
           </Grid>
         </Grid>

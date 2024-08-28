@@ -11,20 +11,16 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
 import {useState} from 'react';
+import {Instance} from '../types/Instance';
 
 interface InventoryProps {
   medicineName2: string;
+  inventory: Instance[];
 }
 
-function createData(expiration: string, qty: string, btns: number) {
+function createData(expiration: string, qty: number, btns: number) {
   return {expiration, qty, btns};
 }
-
-const rows = [
-  createData('Oct 20, 2025', '20 tabletas', 3),
-  createData('Nov 20, 2025', '20 tabletas', 3),
-  createData('Dic 20, 2025', '2 tabletas', 3),
-];
 
 const BoxHead = styled(Box)(() => ({
   display: 'flex',
@@ -64,7 +60,11 @@ const FabTeal = styled(Fab)(() => ({
   },
 }));
 
-export const Inventory = ({medicineName2}: InventoryProps) => {
+export const Inventory = ({medicineName2, inventory}: InventoryProps) => {
+  const rows = inventory.map((item) => {
+    return createData(item.endDate, item.qty, 3);
+  });
+
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -99,9 +99,9 @@ export const Inventory = ({medicineName2}: InventoryProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map((row, idx) => (
               <TableRow
-                key={row.expiration}
+                key={idx}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
               >
                 <TableCellBody component="th" scope="row">
