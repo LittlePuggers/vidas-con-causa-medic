@@ -34,6 +34,7 @@ model Instance {
   id         Int      @id @default(autoincrement())
   medicine   Medicine @relation(fields: [medicineId], references: [id])
   medicineId Int
-  qty        Int
+  quantity   Int
+  unit       String
   endDate    String
 }
