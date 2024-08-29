@@ -18,8 +18,13 @@ interface InventoryProps {
   inventory: Instance[];
 }
 
-function createData(expiration: string, qty: number, btns: number) {
-  return {expiration, qty, btns};
+function createData(
+  expiration: string,
+  qty: number,
+  unit: string,
+  btns: number
+) {
+  return {expiration, qty, unit, btns};
 }
 
 const BoxHead = styled(Box)(() => ({
@@ -62,7 +67,13 @@ const FabTeal = styled(Fab)(() => ({
 
 export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   const rows = inventory.map((item) => {
-    return createData(item.endDate, item.quantity, 3);
+    item.unit =
+      item.unit === 'tablets'
+        ? 'tabletas'
+        : item.unit === 'grams'
+        ? 'gramos'
+        : 'mililitros';
+    return createData(item.endDate, item.quantity, item.unit, 3);
   });
 
   const [open, setOpen] = useState(false);
@@ -107,7 +118,9 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                 <TableCellBody component="th" scope="row">
                   {row.expiration}
                 </TableCellBody>
-                <TableCellBody>{row.qty}</TableCellBody>
+                <TableCellBody>
+                  {row.qty} {row.unit}
+                </TableCellBody>
                 <TableCellBody align="right">
                   <Box sx={{'& > :not(style)': {m: 1}}}>
                     <FabOrange aria-label="add" size="small">
