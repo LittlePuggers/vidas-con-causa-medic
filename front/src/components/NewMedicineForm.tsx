@@ -69,6 +69,17 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
       stock: 0,
       bestUsedBy: '',
     };
+
+    if (
+      !newMedicineData2.name.trim() ||
+      !selectedCategories.length ||
+      !newMedicineData2.components.trim() ||
+      !newMedicineData2.concentration.trim()
+    ) {
+      alert('Please fill in all the required fields.');
+      return;
+    }
+
     console.log(newMedicineData2);
     try {
       const response = await createMedicine(newMedicineData2);
@@ -104,6 +115,7 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
         <Box>
           <DialogContentStyledText>Nombre</DialogContentStyledText>
           <TextField
+            required
             id="name"
             name="name"
             value={newMedicineData.name}
@@ -134,6 +146,7 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
 
           <DialogContentStyledText>Componentes</DialogContentStyledText>
           <TextField
+            required
             id="components"
             name="components"
             value={newMedicineData.components}
@@ -145,6 +158,7 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
             <Box>
               <DialogContentStyledText>Concentración</DialogContentStyledText>
               <TextField
+                required
                 id="concNumber"
                 name="concNumber"
                 value={newMedicineData.concNumber}
@@ -186,6 +200,13 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
               backgroundColor: '#19829A',
             },
           }}
+          disabled={
+            !newMedicineData.name ||
+            selectedCategories.length === 0 ||
+            !newMedicineData.components ||
+            !newMedicineData.concNumber ||
+            !newMedicineData.concUnit
+          }
         >
           Guardar
         </Button>
