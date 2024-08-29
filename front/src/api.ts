@@ -29,7 +29,9 @@ export const getInstances = (id: number): Promise<AxiosResponse<Instance[]>> =>
 
 export const createInstance = (
   data: Partial<Instance>
-): Promise<AxiosResponse<Instance>> => api.post('/instances', data);
+): Promise<AxiosResponse<Instance>> =>
+  api.post(`/medicines/${data.medicineId}/items`, data);
+
 export const updateInstance = (
   id: number,
   data: Partial<Instance>

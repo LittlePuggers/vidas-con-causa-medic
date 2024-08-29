@@ -1,4 +1,6 @@
 export interface Instance {
+  medicineId: number;
   endDate: string;
-  qty: number;
+  quantity: number;
+  unit: string;
 }

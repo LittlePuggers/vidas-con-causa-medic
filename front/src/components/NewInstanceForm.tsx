@@ -1,4 +1,4 @@
-import {SetStateAction, useState} from 'react';
+import {useState} from 'react';
 import {
   Dialog,
   DialogActions,
@@ -10,18 +10,18 @@ import {
   Box,
   Select,
   MenuItem,
-  SelectChangeEvent,
   styled,
 } from '@mui/material';
 import {LocalizationProvider, DatePicker} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, {Dayjs} from 'dayjs';
+import {Dayjs} from 'dayjs';
 import {dialogTitleStyles} from './componentStyles';
+import {createInstance} from '../api';
 
 interface NewInstanceFormProps {
   open: boolean;
   handleClose: () => void;
-  medicineName2: string;
+  medicineInfo: {name: string; id: number};
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -37,27 +37,46 @@ const RowBox = styled(Box)(() => ({
 export const NewInstanceForm = ({
   open,
   handleClose,
-  medicineName2,
+  medicineInfo,
 }: NewInstanceFormProps) => {
-  const [value, setValue] = useState<Dayjs | null>(dayjs('MM/DD/YYYY'));
+  const [newInstanceData, setNewInstanceData] = useState({
+    medicineId: medicineInfo.id,
+    quantity: 0,
+    unit: '',
+    endDate: '',
+  });
 
-  const [qty, setQty] = useState('');
-
-  const handleQty = (event: {target: {value: SetStateAction<string>}}) => {
-    setQty(event.target.value);
+  const handleChange = (e: {target: {name: any; value: any}}) => {
+    const {name, value} = e.target;
+    setNewInstanceData({
+      ...newInstanceData,
+      [name]: name === 'quantity' ? +value : value,
+    });
   };
 
-  const [unit, setUnit] = useState('');
-
-  const handleUnit = (event: SelectChangeEvent) => {
-    setUnit(event.target.value);
+  const handleDateChange = (date: Dayjs | null) => {
+    setNewInstanceData((prevData) => ({
+      ...prevData,
+      endDate: date ? date.toISOString().slice(0, 10) : '',
+    }));
   };
 
-  const save = () => {
-    console.log('save');
-    console.log(value?.format('DD/MM/YYYY'));
-    console.log(qty);
-    console.log(unit);
+  const handleSubmit = async (e: {preventDefault: () => void}) => {
+    e.preventDefault();
+    console.log(newInstanceData);
+    try {
+      const response = await createInstance(newInstanceData);
+      console.log('Instance saved:', response.data);
+      setNewInstanceData({
+        medicineId: medicineInfo.id,
+        quantity: 0,
+        unit: '',
+        endDate: '',
+      });
+      handleClose();
+    } catch (error) {
+      console.error('Error saving instance: ', error);
+    }
   };
 
   return (
@@ -79,16 +98,13 @@ export const NewInstanceForm = ({
     >
       <DialogTitle sx={dialogTitleStyles}>
         <p>Agregar instancia</p>
-        <h3>{medicineName2}</h3>
+        <h3>{medicineInfo.name}</h3>
       </DialogTitle>
       <DialogContent>
         <Box mb={2}>
           <DialogContentStyledText>Fecha de caducidad</DialogContentStyledText>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              value={value}
-              onChange={(newValue) => setValue(newValue)}
-            />
+            <DatePicker onChange={handleDateChange} />
           </LocalizationProvider>
         </Box>
         <RowBox>
@@ -96,18 +112,20 @@ export const NewInstanceForm = ({
             <DialogContentStyledText>Cantidad</DialogContentStyledText>
             <TextField
               id="quantity"
-              value={qty}
+              name="quantity"
+              value={newInstanceData.quantity}
               type="number"
               sx={{width: '75px'}}
-              onChange={handleQty}
+              onChange={handleChange}
             />
           </Box>
           <Box>
             <DialogContentStyledText>Unidad</DialogContentStyledText>
             <Select
               id="unit"
-              value={unit}
-              onChange={handleUnit}
+              name="unit"
+              value={newInstanceData.unit}
+              onChange={handleChange}
               sx={{width: '125px'}}
             >
               <MenuItem value={'tablets'}>Tabletas</MenuItem>
@@ -122,7 +140,7 @@ export const NewInstanceForm = ({
           Cancelar
         </Button>
         <Button
-          onClick={save}
+          onClick={handleSubmit}
           type="submit"
           variant="contained"
           sx={{

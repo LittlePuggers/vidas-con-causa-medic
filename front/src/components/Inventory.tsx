@@ -14,7 +14,7 @@ import {useState} from 'react';
 import {Instance} from '../types/Instance';
 
 interface InventoryProps {
-  medicineName2: string;
+  medicineInfo: {name: string; id: number};
   inventory: Instance[];
 }
 
@@ -60,9 +60,9 @@ const FabTeal = styled(Fab)(() => ({
   },
 }));
 
-export const Inventory = ({medicineName2, inventory}: InventoryProps) => {
+export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   const rows = inventory.map((item) => {
-    return createData(item.endDate, item.qty, 3);
+    return createData(item.endDate, item.quantity, 3);
   });
 
   const [open, setOpen] = useState(false);
@@ -86,7 +86,7 @@ export const Inventory = ({medicineName2, inventory}: InventoryProps) => {
         <NewInstanceForm
           open={open}
           handleClose={handleClose}
-          medicineName2={medicineName2}
+          medicineInfo={medicineInfo}
         />
       </BoxHead>
       <TableContainer>

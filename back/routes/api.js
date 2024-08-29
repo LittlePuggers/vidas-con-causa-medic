@@ -64,4 +64,22 @@ router.get('/medicines/:id/items', async (req, res) => {
   }
 });
 
+// Save new instance
+router.post('/medicines/:id/items', async (req, res) => {
+  const {medicineId, endDate, quantity, unit} = req.body;
+  try {
+    const newInstance = await prisma.instance.create({
+      data: {
+        medicineId,
+        endDate,
+        quantity,
+        unit,
+      },
+    });
+    res.status(201).json(newInstance);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+});
+
 export default router;

@@ -34,10 +34,11 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
   const numberID = id ? +id : 0;
   const product = products.find((product) => product.id.toString() === id);
   const [inventory, setInventory] = useState<Instance[]>([]);
+  const medicineInfo = {name: product ? product.name : '', id: numberID};
 
   useEffect(() => {
     loadInstances(numberID, setInventory);
-  }, []);
+  }, [inventory]);
 
   if (!product) {
     return <Typography variant="h5">Product not found</Typography>;
@@ -60,7 +61,7 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
           <Grid item xs={12} md={12} sx={{display: 'flex'}}>
             <Item>
               <Inventory
-                medicineName2={product.name}
+                medicineInfo={medicineInfo}
                 inventory={inventory}
               ></Inventory>
             </Item>
