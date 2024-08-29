@@ -64,6 +64,16 @@ export const NewInstanceForm = ({
   const handleSubmit = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
     console.log(newInstanceData);
+
+    if (
+      !newInstanceData.quantity ||
+      !newInstanceData.unit.trim() ||
+      !newInstanceData.endDate.trim()
+    ) {
+      alert('Please fill in all the required fields.');
+      return;
+    }
+
     try {
       const response = await createInstance(newInstanceData);
       console.log('Instance saved:', response.data);
@@ -111,6 +121,7 @@ export const NewInstanceForm = ({
           <Box>
             <DialogContentStyledText>Cantidad</DialogContentStyledText>
             <TextField
+              required
               id="quantity"
               name="quantity"
               value={newInstanceData.quantity}
@@ -122,6 +133,7 @@ export const NewInstanceForm = ({
           <Box>
             <DialogContentStyledText>Unidad</DialogContentStyledText>
             <Select
+              required
               id="unit"
               name="unit"
               value={newInstanceData.unit}
@@ -150,6 +162,11 @@ export const NewInstanceForm = ({
               backgroundColor: '#19829A',
             },
           }}
+          disabled={
+            !newInstanceData.quantity ||
+            !newInstanceData.unit ||
+            !newInstanceData.endDate
+          }
         >
           Guardar
         </Button>
