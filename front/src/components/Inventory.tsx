@@ -67,13 +67,15 @@ const FabTeal = styled(Fab)(() => ({
 
 export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   const rows = inventory.map((item) => {
-    item.unit =
+    const unit =
       item.unit === 'tablets'
         ? 'tabletas'
         : item.unit === 'grams'
         ? 'gramos'
-        : 'mililitros';
-    return createData(item.endDate, item.quantity, item.unit, 3);
+        : item.unit === 'mililiters'
+        ? 'mililitros'
+        : 'unknown';
+    return createData(item.endDate, item.quantity, unit, 3);
   });
 
   const [open, setOpen] = useState(false);
