@@ -19,12 +19,13 @@ interface InventoryProps {
 }
 
 function createData(
+  id: number,
   expiration: string,
   qty: number,
   unit: string,
   btns: number
 ) {
-  return {expiration, qty, unit, btns};
+  return {id, expiration, qty, unit, btns};
 }
 
 const BoxHead = styled(Box)(() => ({
@@ -75,14 +76,29 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
         : item.unit === 'mililiters'
         ? 'mililitros'
         : 'unknown';
-    return createData(item.endDate, item.quantity, unit, 3);
+    return createData(item.id, item.endDate, item.quantity, unit, 3);
   });
 
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<'create' | 'edit'>('create');
+  const [selectedInstance, setSelectedInstance] = useState<Instance | null>(
+    null
+  );
 
-  const handleClickOpen = () => {
+  const handleSelectInstance = (instance?: Instance) => {
+    if (instance) {
+      setMode('edit');
+      setSelectedInstance(instance);
+    } else if (!instance) {
+      setMode('create');
+    }
     setOpen(true);
+    console.log(instance);
   };
+
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -92,7 +108,12 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
     <>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
         <Typography color="text.primary">Inventario</Typography>
-        <Fab variant="extended" onClick={handleClickOpen}>
+        <Fab
+          variant="extended"
+          onClick={() => {
+            handleSelectInstance();
+          }}
+        >
           <AutoAwesomeIcon sx={{mr: 1}} />
           Nueva instancia
         </Fab>
@@ -100,6 +121,8 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
           open={open}
           handleClose={handleClose}
           medicineInfo={medicineInfo}
+          mode={mode}
+          instance={null}
         />
       </BoxHead>
       <TableContainer>
@@ -131,9 +154,29 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                     <FabTeal aria-label="subtract" size="small">
                       <RemoveIcon />
                     </FabTeal>
-                    <Fab color="secondary" aria-label="edit" size="small">
+                    <Fab
+                      color="secondary"
+                      aria-label="edit"
+                      size="small"
+                      onClick={() => {
+                        handleSelectInstance({
+                          id: row.id,
+                          medicineId: medicineInfo.id,
+                          endDate: row.expiration,
+                          quantity: row.qty,
+                          unit: row.unit,
+                        });
+                      }}
+                    >
                       <EditIcon />
                     </Fab>
+                    <NewInstanceForm
+                      open={open}
+                      handleClose={handleClose}
+                      medicineInfo={medicineInfo}
+                      mode={mode}
+                      instance={selectedInstance}
+                    />
                   </Box>
                 </TableCellBody>
               </TableRow>

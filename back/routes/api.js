@@ -82,4 +82,23 @@ router.post('/medicines/:id/items', async (req, res) => {
   }
 });
 
+// Update instance
+router.put('/medicines/:medicineId/items/:id', async (req, res) => {
+  const {medicineId, id} = req.params;
+  const {endDate, quantity, unit} = req.body;
+  try {
+    const updateInstance = await prisma.instance.update({
+      where: {medicineId: parseInt(medicineId), id: parseInt(id)},
+      data: {
+        endDate,
+        quantity,
+        unit,
+      },
+    });
+    res.status(201).json(updateInstance);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+});
+
 export default router;

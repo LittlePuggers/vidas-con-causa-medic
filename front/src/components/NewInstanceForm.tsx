@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Dialog,
   DialogActions,
@@ -14,14 +14,17 @@ import {
 } from '@mui/material';
 import {LocalizationProvider, DatePicker} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {Dayjs} from 'dayjs';
+import dayjs, {Dayjs} from 'dayjs';
 import {dialogTitleStyles} from './componentStyles';
-import {createInstance} from '../api';
+import {createInstance, updateInstance} from '../api';
+import {Instance} from '../types/Instance';
 
 interface NewInstanceFormProps {
   open: boolean;
   handleClose: () => void;
   medicineInfo: {name: string; id: number};
+  mode: 'edit' | 'create';
+  instance: Instance | null;
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -38,6 +41,8 @@ export const NewInstanceForm = ({
   open,
   handleClose,
   medicineInfo,
+  mode,
+  instance,
 }: NewInstanceFormProps) => {
   const [newInstanceData, setNewInstanceData] = useState({
     medicineId: medicineInfo.id,
@@ -45,6 +50,31 @@ export const NewInstanceForm = ({
     unit: '',
     endDate: '',
   });
+
+  useEffect(() => {
+    if (mode === 'edit' && instance) {
+      setNewInstanceData({
+        ...newInstanceData,
+        quantity: instance.quantity,
+        unit:
+          instance.unit === 'tabletas'
+            ? 'tablets'
+            : instance.unit === 'gramos'
+            ? 'grams'
+            : instance.unit === 'mililitros'
+            ? 'mililiters'
+            : '',
+        endDate: instance.endDate,
+      });
+    } else if (mode === 'create') {
+      setNewInstanceData({
+        ...newInstanceData,
+        quantity: 0,
+        unit: '',
+        endDate: '',
+      });
+    }
+  }, [mode, instance]);
 
   const handleChange = (e: {target: {name: any; value: any}}) => {
     const {name, value} = e.target;
@@ -75,14 +105,23 @@ export const NewInstanceForm = ({
     }
 
     try {
-      const response = await createInstance(newInstanceData);
-      console.log('Instance saved:', response.data);
-      setNewInstanceData({
-        medicineId: medicineInfo.id,
-        quantity: 0,
-        unit: '',
-        endDate: '',
-      });
+      if (mode === 'create') {
+        const response = await createInstance(newInstanceData);
+        console.log('Instance saved:', response.data);
+        setNewInstanceData({
+          medicineId: medicineInfo.id,
+          quantity: 0,
+          unit: '',
+          endDate: '',
+        });
+      } else if (mode === 'edit' && instance) {
+        const response = await updateInstance(
+          medicineInfo.id,
+          instance.id,
+          newInstanceData
+        );
+        console.log('Instance updated:', response.data);
+      }
       handleClose();
     } catch (error) {
       console.error('Error saving instance: ', error);
@@ -107,14 +146,19 @@ export const NewInstanceForm = ({
       }}
     >
       <DialogTitle sx={dialogTitleStyles}>
-        <p>Agregar instancia</p>
+        <p>
+          {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
+        </p>
         <h3>{medicineInfo.name}</h3>
       </DialogTitle>
       <DialogContent>
         <Box mb={2}>
           <DialogContentStyledText>Fecha de caducidad</DialogContentStyledText>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker onChange={handleDateChange} />
+            <DatePicker
+              value={dayjs(newInstanceData.endDate)}
+              onChange={handleDateChange}
+            />
           </LocalizationProvider>
         </Box>
         <RowBox>
