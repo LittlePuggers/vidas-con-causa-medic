@@ -172,6 +172,7 @@ export const NewInstanceForm = ({
               name="quantity"
               value={newInstanceData.quantity}
               type="number"
+              inputProps={{min: 0}}
               sx={{width: '75px'}}
               onChange={handleChange}
             />
@@ -209,7 +210,7 @@ export const NewInstanceForm = ({
             },
           }}
           disabled={
-            !newInstanceData.quantity ||
+            newInstanceData.quantity <= 0 ||
             !newInstanceData.unit ||
             !newInstanceData.endDate
           }
