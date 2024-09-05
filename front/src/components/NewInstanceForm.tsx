@@ -146,10 +146,12 @@ export const NewInstanceForm = ({
       }}
     >
       <DialogTitle sx={dialogTitleStyles}>
-        <p>
-          {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
-        </p>
-        <h3>{medicineInfo.name}</h3>
+        <div>
+          <p>
+            {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
+          </p>
+          <h3>{medicineInfo.name}</h3>
+        </div>
       </DialogTitle>
       <DialogContent>
         <Box mb={2}>
