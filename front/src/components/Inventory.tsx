@@ -10,7 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Instance} from '../types/Instance';
 
 interface InventoryProps {
@@ -85,45 +85,55 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
     null
   );
 
-  const handleSelectInstance = (instance?: Instance) => {
-    if (instance) {
+  const handleSelectInstance = (instance: Instance | null) => {
+    if (instance !== null) {
       setMode('edit');
       setSelectedInstance(instance);
-    } else if (!instance) {
+    } else if (instance === null) {
       setMode('create');
     }
     setOpen(true);
-    console.log(instance);
   };
-
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    console.log(mode);
+  }, [mode]);
 
   return (
     <>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
         <Typography color="text.primary">Inventario</Typography>
         <Fab
+          aria-label="create"
           variant="extended"
           onClick={() => {
-            handleSelectInstance();
+            handleSelectInstance(null);
           }}
         >
           <AutoAwesomeIcon sx={{mr: 1}} />
           Nueva instancia
         </Fab>
-        <NewInstanceForm
-          open={open}
-          handleClose={handleClose}
-          medicineInfo={medicineInfo}
-          mode={mode}
-          instance={null}
-        />
+        {mode === 'edit' && selectedInstance ? (
+          <NewInstanceForm
+            open={open}
+            handleClose={handleClose}
+            medicineInfo={medicineInfo}
+            mode={mode}
+            instance={selectedInstance}
+          />
+        ) : (
+          <NewInstanceForm
+            open={open}
+            handleClose={handleClose}
+            medicineInfo={medicineInfo}
+            mode={mode}
+            instance={null}
+          />
+        )}
       </BoxHead>
       <TableContainer>
         <Table sx={{minWidth: 650}} aria-label="simple table">
@@ -135,9 +145,9 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, idx) => (
+            {rows.map((row) => (
               <TableRow
-                key={idx}
+                key={row.id}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
               >
                 <TableCellBody component="th" scope="row">
@@ -170,13 +180,6 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                     >
                       <EditIcon />
                     </Fab>
-                    <NewInstanceForm
-                      open={open}
-                      handleClose={handleClose}
-                      medicineInfo={medicineInfo}
-                      mode={mode}
-                      instance={selectedInstance}
-                    />
                   </Box>
                 </TableCellBody>
               </TableRow>
