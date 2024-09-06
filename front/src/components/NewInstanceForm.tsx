@@ -44,37 +44,41 @@ export const NewInstanceForm = ({
   mode,
   instance,
 }: NewInstanceFormProps) => {
-  const [newInstanceData, setNewInstanceData] = useState({
-    medicineId: medicineInfo.id,
-    quantity: 0,
-    unit: '',
-    endDate: '',
-  });
-
-  useEffect(() => {
-    if (mode === 'edit' && instance) {
-      setNewInstanceData({
-        ...newInstanceData,
-        quantity: instance.quantity,
-        unit:
-          instance.unit === 'tabletas'
-            ? 'tablets'
-            : instance.unit === 'gramos'
-            ? 'grams'
-            : instance.unit === 'mililitros'
-            ? 'mililiters'
-            : '',
-        endDate: instance.endDate,
-      });
-    } else if (mode === 'create') {
-      setNewInstanceData({
-        ...newInstanceData,
+  const initialState = instance
+    ? instance
+    : {
+        medicineId: medicineInfo.id,
         quantity: 0,
         unit: '',
         endDate: '',
-      });
-    }
-  }, [mode, instance]);
+      };
+
+  const [newInstanceData, setNewInstanceData] = useState(initialState);
+
+  // useEffect(() => {
+  //   if (mode === 'edit' && instance) {
+  //     setNewInstanceData({
+  //       ...newInstanceData,
+  //       quantity: instance.quantity,
+  //       unit:
+  //         instance.unit === 'tabletas'
+  //           ? 'tablets'
+  //           : instance.unit === 'gramos'
+  //           ? 'grams'
+  //           : instance.unit === 'mililitros'
+  //           ? 'mililiters'
+  //           : '',
+  //       endDate: instance.endDate,
+  //     });
+  //   } else if (mode === 'create') {
+  //     setNewInstanceData({
+  //       ...newInstanceData,
+  //       quantity: 0,
+  //       unit: '',
+  //       endDate: '',
+  //     });
+  //   }
+  // }, [mode, instance]);
 
   const handleChange = (e: {target: {name: any; value: any}}) => {
     const {name, value} = e.target;
@@ -91,9 +95,12 @@ export const NewInstanceForm = ({
     }));
   };
 
+  const handleDelete = (id: number) => {
+    alert(`Seguro que quieres eliminar esta instancia? ${id}`);
+  };
+
   const handleSubmit = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
-    console.log(newInstanceData);
 
     if (
       !newInstanceData.quantity ||
@@ -135,22 +142,13 @@ export const NewInstanceForm = ({
       PaperProps={{
         component: 'form',
         sx: {padding: '1rem 4rem', border: '2px solid #209EBB'},
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          const email = formJson.email;
-          console.log(email);
-          handleClose();
-        },
       }}
     >
       <DialogTitle sx={dialogTitleStyles}>
         <div>
-          <p>
-            {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
-          </p>
+          {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
           <h3>{medicineInfo.name}</h3>
+          <p>{mode}</p>
         </div>
       </DialogTitle>
       <DialogContent>
@@ -217,6 +215,15 @@ export const NewInstanceForm = ({
         >
           Guardar
         </Button>
+        {mode === 'edit' ? (
+          <Button
+            variant="contained"
+            sx={{backgroundColor: 'red'}}
+            onClick={() => handleDelete}
+          >
+            Eliminar
+          </Button>
+        ) : null}
       </DialogActions>
     </Dialog>
   );
