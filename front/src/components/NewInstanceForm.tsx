@@ -44,41 +44,38 @@ export const NewInstanceForm = ({
   mode,
   instance,
 }: NewInstanceFormProps) => {
-  const initialState = instance
-    ? instance
-    : {
-        medicineId: medicineInfo.id,
+  const [newInstanceData, setNewInstanceData] = useState({
+    id: 0,
+    medicineId: medicineInfo.id,
+    quantity: 0,
+    unit: '',
+    endDate: '',
+  });
+
+  useEffect(() => {
+    if (mode === 'edit' && instance) {
+      setNewInstanceData({
+        ...newInstanceData,
+        quantity: instance.quantity,
+        unit:
+          instance.unit === 'tabletas'
+            ? 'tablets'
+            : instance.unit === 'gramos'
+            ? 'grams'
+            : instance.unit === 'mililitros'
+            ? 'mililiters'
+            : '',
+        endDate: instance.endDate,
+      });
+    } else if (mode === 'create') {
+      setNewInstanceData({
+        ...newInstanceData,
         quantity: 0,
         unit: '',
         endDate: '',
-      };
-
-  const [newInstanceData, setNewInstanceData] = useState(initialState);
-
-  // useEffect(() => {
-  //   if (mode === 'edit' && instance) {
-  //     setNewInstanceData({
-  //       ...newInstanceData,
-  //       quantity: instance.quantity,
-  //       unit:
-  //         instance.unit === 'tabletas'
-  //           ? 'tablets'
-  //           : instance.unit === 'gramos'
-  //           ? 'grams'
-  //           : instance.unit === 'mililitros'
-  //           ? 'mililiters'
-  //           : '',
-  //       endDate: instance.endDate,
-  //     });
-  //   } else if (mode === 'create') {
-  //     setNewInstanceData({
-  //       ...newInstanceData,
-  //       quantity: 0,
-  //       unit: '',
-  //       endDate: '',
-  //     });
-  //   }
-  // }, [mode, instance]);
+      });
+    }
+  }, [mode, instance]);
 
   const handleChange = (e: {target: {name: any; value: any}}) => {
     const {name, value} = e.target;
@@ -116,6 +113,7 @@ export const NewInstanceForm = ({
         const response = await createInstance(newInstanceData);
         console.log('Instance saved:', response.data);
         setNewInstanceData({
+          id: 0,
           medicineId: medicineInfo.id,
           quantity: 0,
           unit: '',
@@ -149,6 +147,7 @@ export const NewInstanceForm = ({
           {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
           <h3>{medicineInfo.name}</h3>
           <p>{mode}</p>
+          <p>endDAte:{instance?.quantity}</p>
         </div>
       </DialogTitle>
       <DialogContent>
