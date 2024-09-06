@@ -39,5 +39,5 @@ export const updateInstance = (
 ): Promise<AxiosResponse<Instance>> =>
   api.put(`/medicines/${medicineId}/items/${id}`, data);
 
-export const deleteInstance = (id: number): Promise<void> =>
-  api.delete(`/instances/${id}`);
+export const deleteInstance = (medicineId: number, id: number): Promise<void> =>
+  api.delete(`/medicines/${medicineId}/items/${id}`);

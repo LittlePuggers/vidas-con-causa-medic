@@ -101,4 +101,17 @@ router.put('/medicines/:medicineId/items/:id', async (req, res) => {
   }
 });
 
+// Delete instance
+router.delete('/medicines/:medicineId/items/:id', async (req, res) => {
+  const {medicineId, id} = req.params;
+  try {
+    const deleteInstance = await prisma.instance.delete({
+      where: {medicineId: parseInt(medicineId), id: parseInt(id)},
+    });
+    res.status(201).json(deleteInstance);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+});
+
 export default router;

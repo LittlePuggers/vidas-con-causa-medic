@@ -16,7 +16,7 @@ import {LocalizationProvider, DatePicker} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, {Dayjs} from 'dayjs';
 import {dialogTitleStyles} from './componentStyles';
-import {createInstance, updateInstance} from '../api';
+import {createInstance, deleteInstance, updateInstance} from '../api';
 import {Instance} from '../types/Instance';
 
 interface NewInstanceFormProps {
@@ -56,6 +56,7 @@ export const NewInstanceForm = ({
     if (mode === 'edit' && instance) {
       setNewInstanceData({
         ...newInstanceData,
+        id: instance.id,
         quantity: instance.quantity,
         unit:
           instance.unit === 'tabletas'
@@ -92,8 +93,21 @@ export const NewInstanceForm = ({
     }));
   };
 
-  const handleDelete = (id: number) => {
-    alert(`Seguro que quieres eliminar esta instancia? ${id}`);
+  const handleDelete = async (id: number) => {
+    const confirmation = confirm(
+      `Seguro que quieres eliminar esta instancia? ${id}`
+    );
+    try {
+      if (confirmation) {
+        const response = await deleteInstance(medicineInfo.id, id);
+        console.log('Instance deleted:', response);
+        handleClose();
+      } else if (!confirmation) {
+        console.log('Instance not deleted');
+      }
+    } catch (error) {
+      console.log('Error deleting instance', error);
+    }
   };
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
@@ -146,8 +160,6 @@ export const NewInstanceForm = ({
         <div>
           {mode === 'edit' ? 'Editar instancia' : 'Agregar nueva instancia'}
           <h3>{medicineInfo.name}</h3>
-          <p>{mode}</p>
-          <p>endDAte:{instance?.quantity}</p>
         </div>
       </DialogTitle>
       <DialogContent>
@@ -216,9 +228,9 @@ export const NewInstanceForm = ({
         </Button>
         {mode === 'edit' ? (
           <Button
+            color="warning"
             variant="contained"
-            sx={{backgroundColor: 'red'}}
-            onClick={() => handleDelete}
+            onClick={() => handleDelete(newInstanceData.id)}
           >
             Eliminar
           </Button>
