@@ -10,7 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
 
 interface InventoryProps {
@@ -84,6 +84,33 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   const [selectedInstance, setSelectedInstance] = useState<Instance | null>(
     null
   );
+  const [clickCount, setClickCount] = useState({add: 0, remove: 0});
+  const timeoutRef = useRef<number | null>(null);
+
+  const handleChangeQty = (
+    id: number,
+    quantity: number,
+    change: 'add' | 'remove'
+  ) => {
+    setClickCount((prevCount) => ({
+      ...prevCount,
+      [change]: prevCount[change] + 1,
+    }));
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      setClickCount((prevCount) => {
+        console.log(
+          `Instance ${id} final quantity: ${
+            quantity + prevCount.add - prevCount.remove
+          }`
+        );
+        return {add: 0, remove: 0};
+      });
+    }, 3000);
+  };
 
   const handleSelectInstance = (instance: Instance | null) => {
     if (instance !== null) {
@@ -100,8 +127,12 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   };
 
   useEffect(() => {
-    console.log(mode);
-  }, [mode]);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -158,12 +189,20 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                 </TableCellBody>
                 <TableCellBody align="right">
                   <Box sx={{'& > :not(style)': {m: 1}}}>
-                    <FabOrange aria-label="add" size="small">
+                    <FabTeal
+                      aria-label="add"
+                      size="small"
+                      onClick={() => handleChangeQty(row.id, row.qty, 'add')}
+                    >
                       <AddIcon />
-                    </FabOrange>
-                    <FabTeal aria-label="subtract" size="small">
-                      <RemoveIcon />
                     </FabTeal>
+                    <FabOrange
+                      aria-label="subtract"
+                      size="small"
+                      onClick={() => handleChangeQty(row.id, row.qty, 'remove')}
+                    >
+                      <RemoveIcon />
+                    </FabOrange>
                     <Fab
                       color="secondary"
                       aria-label="edit"
