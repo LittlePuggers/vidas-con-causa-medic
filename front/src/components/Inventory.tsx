@@ -12,6 +12,7 @@ import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
 import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
+import {updateInstance} from '../api';
 
 interface InventoryProps {
   medicineInfo: {name: string; id: number};
@@ -68,15 +69,7 @@ const FabTeal = styled(Fab)(() => ({
 
 export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   const rows = inventory.map((item) => {
-    const unit =
-      item.unit === 'tablets'
-        ? 'tabletas'
-        : item.unit === 'grams'
-        ? 'gramos'
-        : item.unit === 'mililiters'
-        ? 'mililitros'
-        : 'unknown';
-    return createData(item.id, item.endDate, item.quantity, unit, 3);
+    return createData(item.id, item.endDate, item.quantity, item.unit, 3);
   });
 
   const [open, setOpen] = useState(false);
@@ -87,11 +80,9 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
   const [clickCount, setClickCount] = useState({add: 0, remove: 0});
   const timeoutRef = useRef<number | null>(null);
 
-  const handleChangeQty = (
-    id: number,
-    quantity: number,
-    change: 'add' | 'remove'
-  ) => {
+  const handleChangeQty = (instance: Instance, change: 'add' | 'remove') => {
+    let newQty: number;
+    let newInstanceData = instance;
     setClickCount((prevCount) => ({
       ...prevCount,
       [change]: prevCount[change] + 1,
@@ -100,15 +91,20 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    timeoutRef.current = window.setTimeout(() => {
+    timeoutRef.current = window.setTimeout(async () => {
       setClickCount((prevCount) => {
-        console.log(
-          `Instance ${id} final quantity: ${
-            quantity + prevCount.add - prevCount.remove
-          }`
-        );
+        newQty = instance.quantity + prevCount.add - prevCount.remove;
         return {add: 0, remove: 0};
       });
+      if (instance.quantity !== newQty) {
+        newInstanceData = {...newInstanceData, quantity: newQty};
+        const response = await updateInstance(
+          medicineInfo.id,
+          instance.id,
+          newInstanceData
+        );
+        console.log(response);
+      } else console.log('Quantity was not changed');
     }, 3000);
   };
 
@@ -192,14 +188,36 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                     <FabTeal
                       aria-label="add"
                       size="small"
-                      onClick={() => handleChangeQty(row.id, row.qty, 'add')}
+                      onClick={() =>
+                        handleChangeQty(
+                          {
+                            medicineId: medicineInfo.id,
+                            endDate: row.expiration,
+                            unit: row.unit,
+                            id: row.id,
+                            quantity: row.qty,
+                          },
+                          'add'
+                        )
+                      }
                     >
                       <AddIcon />
                     </FabTeal>
                     <FabOrange
                       aria-label="subtract"
                       size="small"
-                      onClick={() => handleChangeQty(row.id, row.qty, 'remove')}
+                      onClick={() =>
+                        handleChangeQty(
+                          {
+                            medicineId: medicineInfo.id,
+                            endDate: row.expiration,
+                            unit: row.unit,
+                            id: row.id,
+                            quantity: row.qty,
+                          },
+                          'remove'
+                        )
+                      }
                     >
                       <RemoveIcon />
                     </FabOrange>

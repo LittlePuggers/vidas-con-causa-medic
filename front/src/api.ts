@@ -35,7 +35,7 @@ export const createInstance = (
 export const updateInstance = (
   medicineId: number,
   id: number,
-  data: Partial<Instance>
+  data: Instance
 ): Promise<AxiosResponse<Instance>> =>
   api.put(`/medicines/${medicineId}/items/${id}`, data);
 

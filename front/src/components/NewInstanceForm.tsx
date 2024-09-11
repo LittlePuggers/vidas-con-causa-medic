@@ -58,14 +58,7 @@ export const NewInstanceForm = ({
         ...newInstanceData,
         id: instance.id,
         quantity: instance.quantity,
-        unit:
-          instance.unit === 'tabletas'
-            ? 'tablets'
-            : instance.unit === 'gramos'
-            ? 'grams'
-            : instance.unit === 'mililitros'
-            ? 'mililiters'
-            : '',
+        unit: instance.unit,
         endDate: instance.endDate,
       });
     } else if (mode === 'create') {
@@ -196,9 +189,9 @@ export const NewInstanceForm = ({
               onChange={handleChange}
               sx={{width: '125px'}}
             >
-              <MenuItem value={'tablets'}>Tabletas</MenuItem>
-              <MenuItem value={'grams'}>Gramos</MenuItem>
-              <MenuItem value={'mililiters'}>Mililitros</MenuItem>
+              <MenuItem value={'tabletas'}>Tabletas</MenuItem>
+              <MenuItem value={'gramos'}>Gramos</MenuItem>
+              <MenuItem value={'mililitros'}>Mililitros</MenuItem>
             </Select>
           </Box>
         </RowBox>
