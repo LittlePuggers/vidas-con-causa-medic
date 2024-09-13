@@ -74,6 +74,11 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
     setOpen(false);
   };
 
+  const handleSearch = (query: string) => {
+    console.log('Search query:', query);
+    // Add logic to handle search (e.g., filter data, make an API call, etc.)
+  };
+
   return (
     <div style={{height: 400, width: '100%'}}>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
@@ -89,7 +94,7 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
         />
       </BoxHead>
       <Box>
-        <SearchBar></SearchBar>
+        <SearchBar onSearch={handleSearch}></SearchBar>
       </Box>
       <DataGrid
         rows={medicines}
@@ -100,7 +105,7 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
           },
         }}
         pageSizeOptions={[10, 20]}
-        checkboxSelection
+        // checkboxSelection
         sx={gridStyles}
       />
     </div>

@@ -105,7 +105,7 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
         );
         console.log(response);
       } else console.log('Quantity was not changed');
-    }, 3000);
+    }, 1000);
   };
 
   const handleSelectInstance = (instance: Instance | null) => {
