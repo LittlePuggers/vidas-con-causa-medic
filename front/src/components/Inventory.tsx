@@ -68,6 +68,11 @@ const FabTeal = styled(Fab)(() => ({
 }));
 
 export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
+  inventory.sort((a, b) => {
+    const dateA = new Date(a.endDate).getTime();
+    const dateB = new Date(b.endDate).getTime();
+    return dateA - dateB;
+  });
   const rows = inventory.map((item) => {
     return createData(item.id, item.endDate, item.quantity, item.unit, 3);
   });
