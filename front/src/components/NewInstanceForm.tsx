@@ -75,7 +75,8 @@ export const NewInstanceForm = ({
     const {name, value} = e.target;
     setNewInstanceData({
       ...newInstanceData,
-      [name]: name === 'quantity' ? +value : value,
+      [name]: value,
+      // [name]: name === 'quantity' ? +value : value,
     });
   };
 
@@ -115,9 +116,14 @@ export const NewInstanceForm = ({
       return;
     }
 
+    const submitInstanceData = {
+      ...newInstanceData,
+      quantity: +newInstanceData.quantity,
+    };
+
     try {
       if (mode === 'create') {
-        const response = await createInstance(newInstanceData);
+        const response = await createInstance(submitInstanceData);
         console.log('Instance saved:', response.data);
         setNewInstanceData({
           id: 0,
@@ -130,7 +136,7 @@ export const NewInstanceForm = ({
         const response = await updateInstance(
           medicineInfo.id,
           instance.id,
-          newInstanceData
+          submitInstanceData
         );
         console.log('Instance updated:', response.data);
       }
