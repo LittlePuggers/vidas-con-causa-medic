@@ -1,4 +1,5 @@
 const gridStyles = {
+  height: '165%',
   backgroundColor: 'white',
   '& .MuiDataGrid-row:nth-of-type(odd)': {
     backgroundColor: 'whitesmoke',
@@ -14,6 +15,7 @@ const gridStyles = {
   '& .MuiDataGrid-columnHeaderTitle': {
     fontWeight: '400',
   },
+  '& .MuiDataGrid-scrollbar': {},
 };
 
 const componentStyles = {

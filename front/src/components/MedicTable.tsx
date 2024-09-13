@@ -27,7 +27,7 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
   }, []);
 
   const columns: GridColDef[] = [
-    {field: 'id', headerName: 'ID', width: 70},
+    {field: 'id', headerName: 'ID', width: 50},
     {
       field: 'name',
       headerName: 'Nombre',
@@ -104,7 +104,7 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
             paginationModel: {page: 0, pageSize: 10},
           },
         }}
-        pageSizeOptions={[10, 20]}
+        pageSizeOptions={[10, 20, 30]}
         // checkboxSelection
         sx={gridStyles}
       />
