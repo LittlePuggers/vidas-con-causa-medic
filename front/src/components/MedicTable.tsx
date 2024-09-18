@@ -5,11 +5,12 @@ import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
 import {SearchBar} from './SearchBar.tsx';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {NewMedicineForm} from './NewMedicineForm';
 
 interface MedicTableProps {
   medicines: MedicineType[];
+  setMedicines: (medicines: MedicineType[]) => void;
 }
 
 const {gridStyles} = componentStyles;
@@ -21,11 +22,7 @@ const BoxHead = styled(Box)(() => ({
   padding: '1em 2em',
 }));
 
-const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
-  useEffect(() => {
-    console.log(medicines);
-  }, []);
-
+const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
   const columns: GridColDef[] = [
     {field: 'id', headerName: 'ID', width: 50},
     {
@@ -69,8 +66,8 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines}) => {
     setOpen(false);
   };
 
-  const handleFormSubmit = async () => {
-    // await loadMedicines(setMedicines);
+  const handleFormSubmit = async (newMedicine: MedicineType) => {
+    setMedicines([...medicines, newMedicine]);
     setOpen(false);
   };
 

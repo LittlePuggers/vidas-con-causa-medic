@@ -10,11 +10,12 @@ import styled from '@emotion/styled';
 import {Box, Checkbox, ListItemText, MenuItem, Select} from '@mui/material';
 import {useState} from 'react';
 import {createMedicine} from '../api';
+import {Medicine} from '../types/Medicine';
 
 interface NewMedicineFormProps {
   open: boolean;
   handleClose: () => void;
-  onSubmit: () => {};
+  onSubmit: (newMedicine: Medicine) => void;
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -35,7 +36,11 @@ const categories = [
   'Oftálmico',
 ];
 
-export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
+export const NewMedicineForm = ({
+  open,
+  handleClose,
+  onSubmit,
+}: NewMedicineFormProps) => {
   const [newMedicineData, setNewMedicineData] = useState({
     name: '',
     category: '',
@@ -80,10 +85,10 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
       return;
     }
 
-    console.log(newMedicineData2);
     try {
       const response = await createMedicine(newMedicineData2);
       console.log('Medicine saved:', response.data);
+      onSubmit(response.data);
       setNewMedicineData({
         name: '',
         category: '',
@@ -109,7 +114,9 @@ export const NewMedicineForm = ({open, handleClose}: NewMedicineFormProps) => {
       }}
     >
       <DialogTitle sx={dialogTitleStyles}>
-        <h3>Agregar medicina</h3>
+        <div>
+          <h2>Agregar medicina</h2>
+        </div>
       </DialogTitle>
       <DialogContent>
         <Box>

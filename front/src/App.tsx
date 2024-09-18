@@ -21,7 +21,12 @@ const App: React.FC = () => {
       <main>
         <Router>
           <Routes>
-            <Route path="/" element={<MedicTable medicines={products} />} />
+            <Route
+              path="/"
+              element={
+                <MedicTable medicines={products} setMedicines={setProducts} />
+              }
+            />
             <Route
               path="/medicine/:id"
               element={<Medicine products={products} />}
