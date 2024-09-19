@@ -8,8 +8,6 @@ import {
   Button,
   TextField,
   Box,
-  Select,
-  MenuItem,
   styled,
 } from '@mui/material';
 import {LocalizationProvider, DatePicker} from '@mui/x-date-pickers';
@@ -22,7 +20,7 @@ import {Instance} from '../types/Instance';
 interface NewInstanceFormProps {
   open: boolean;
   handleClose: () => void;
-  medicineInfo: {name: string; id: number};
+  medicineInfo: {name: string; id: number; unit: string};
   mode: 'edit' | 'create';
   instance: Instance | null;
 }
@@ -185,19 +183,9 @@ export const NewInstanceForm = ({
             />
           </Box>
           <Box>
-            <DialogContentStyledText>Unidad</DialogContentStyledText>
-            <Select
-              required
-              id="unit"
-              name="unit"
-              value={newInstanceData.unit}
-              onChange={handleChange}
-              sx={{width: '125px'}}
-            >
-              <MenuItem value={'tabletas'}>Tabletas</MenuItem>
-              <MenuItem value={'gramos'}>Gramos</MenuItem>
-              <MenuItem value={'mililitros'}>Mililitros</MenuItem>
-            </Select>
+            <DialogContentStyledText>
+              {medicineInfo.unit}
+            </DialogContentStyledText>
           </Box>
         </RowBox>
       </DialogContent>

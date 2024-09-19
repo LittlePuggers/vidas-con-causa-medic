@@ -34,7 +34,11 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
   const numberID = id ? +id : 0;
   const product = products.find((product) => product.id.toString() === id);
   const [inventory, setInventory] = useState<Instance[]>([]);
-  const medicineInfo = {name: product ? product.name : '', id: numberID};
+  const medicineInfo = {
+    name: product ? product.name : '',
+    id: numberID,
+    unit: product ? product.unit : '',
+  };
 
   useEffect(() => {
     loadInstances(numberID, setInventory);

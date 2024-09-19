@@ -15,18 +15,12 @@ import {Instance} from '../types/Instance';
 import {updateInstance} from '../api';
 
 interface InventoryProps {
-  medicineInfo: {name: string; id: number};
+  medicineInfo: {name: string; id: number; unit: string};
   inventory: Instance[];
 }
 
-function createData(
-  id: number,
-  expiration: string,
-  qty: number,
-  unit: string,
-  btns: number
-) {
-  return {id, expiration, qty, unit, btns};
+function createData(id: number, expiration: string, qty: number, btns: number) {
+  return {id, expiration, qty, btns};
 }
 
 const BoxHead = styled(Box)(() => ({
@@ -74,7 +68,7 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
     return dateA - dateB;
   });
   const rows = inventory.map((item) => {
-    return createData(item.id, item.endDate, item.quantity, item.unit, 3);
+    return createData(item.id, item.endDate, item.quantity, 3);
   });
 
   const [open, setOpen] = useState(false);
@@ -186,7 +180,7 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                   {row.expiration}
                 </TableCellBody>
                 <TableCellBody>
-                  {row.qty} {row.unit}
+                  {row.qty} {medicineInfo.unit}
                 </TableCellBody>
                 <TableCellBody align="right">
                   <Box sx={{'& > :not(style)': {m: 1}}}>
@@ -198,7 +192,6 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                           {
                             medicineId: medicineInfo.id,
                             endDate: row.expiration,
-                            unit: row.unit,
                             id: row.id,
                             quantity: row.qty,
                           },
@@ -216,7 +209,6 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                           {
                             medicineId: medicineInfo.id,
                             endDate: row.expiration,
-                            unit: row.unit,
                             id: row.id,
                             quantity: row.qty,
                           },
@@ -236,7 +228,6 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
                           medicineId: medicineInfo.id,
                           endDate: row.expiration,
                           quantity: row.qty,
-                          unit: row.unit,
                         });
                       }}
                     >

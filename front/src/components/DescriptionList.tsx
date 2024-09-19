@@ -63,6 +63,13 @@ export const DescriptionList = ({medicineInfo}: DescriptionListProps) => {
             </IconButton>
           </ListItem>
           <Divider />
+          <ListItem disablePadding>
+            <ItemText primary="Unidades" secondary={medicineInfo.unit} />
+            <IconButton edge="end" aria-label="edit" sx={{marginRight: 0}}>
+              <EditIcon />
+            </IconButton>
+          </ListItem>
+          <Divider />
         </List>
       </nav>
     </Box>

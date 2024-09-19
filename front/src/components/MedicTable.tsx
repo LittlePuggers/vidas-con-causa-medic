@@ -46,8 +46,8 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
     {
       field: 'stock',
       headerName: 'Stock',
-      type: 'number',
       width: 90,
+      renderCell: (params) => `${params.row.stock} ${params.row.unit}`,
     },
     {
       field: 'bestUsedBy',
