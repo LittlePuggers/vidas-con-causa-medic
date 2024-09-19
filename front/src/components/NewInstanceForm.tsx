@@ -23,6 +23,7 @@ interface NewInstanceFormProps {
   medicineInfo: {name: string; id: number; unit: string};
   mode: 'edit' | 'create';
   instance: Instance | null;
+  onSave: any;
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -41,12 +42,12 @@ export const NewInstanceForm = ({
   medicineInfo,
   mode,
   instance,
+  onSave,
 }: NewInstanceFormProps) => {
   const [newInstanceData, setNewInstanceData] = useState({
     id: 0,
     medicineId: medicineInfo.id,
     quantity: 0,
-    unit: '',
     endDate: '',
   });
 
@@ -62,7 +63,6 @@ export const NewInstanceForm = ({
       setNewInstanceData({
         ...newInstanceData,
         quantity: 0,
-        unit: '',
         endDate: '',
       });
     }
@@ -103,30 +103,25 @@ export const NewInstanceForm = ({
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
-
-    if (
-      !newInstanceData.quantity ||
-      !newInstanceData.unit.trim() ||
-      !newInstanceData.endDate.trim()
-    ) {
-      alert('Please fill in all the required fields.');
-      return;
-    }
-
     const submitInstanceData = {
       ...newInstanceData,
       quantity: +newInstanceData.quantity,
     };
 
+    if (!newInstanceData.quantity || !newInstanceData.endDate.trim()) {
+      alert('Please fill in all the required fields.');
+      return;
+    }
+
     try {
       if (mode === 'create') {
         const response = await createInstance(submitInstanceData);
         console.log('Instance saved:', response.data);
+        onSave(response.data);
         setNewInstanceData({
           id: 0,
           medicineId: medicineInfo.id,
           quantity: 0,
-          unit: '',
           endDate: '',
         });
       } else if (mode === 'edit' && instance) {
@@ -136,6 +131,7 @@ export const NewInstanceForm = ({
           submitInstanceData
         );
         console.log('Instance updated:', response.data);
+        onSave(response.data);
       }
       handleClose();
     } catch (error) {
@@ -168,7 +164,7 @@ export const NewInstanceForm = ({
             />
           </LocalizationProvider>
         </Box>
-        <RowBox>
+        <RowBox sx={{justifyContent: 'start', alignItems: 'end'}}>
           <Box>
             <DialogContentStyledText>Cantidad</DialogContentStyledText>
             <TextField
@@ -182,10 +178,8 @@ export const NewInstanceForm = ({
               onChange={handleChange}
             />
           </Box>
-          <Box>
-            <DialogContentStyledText>
-              {medicineInfo.unit}
-            </DialogContentStyledText>
+          <Box sx={{marginLeft: '1em'}}>
+            <p>{medicineInfo.unit}</p>
           </Box>
         </RowBox>
       </DialogContent>
@@ -204,11 +198,7 @@ export const NewInstanceForm = ({
               backgroundColor: '#19829A',
             },
           }}
-          disabled={
-            newInstanceData.quantity <= 0 ||
-            !newInstanceData.unit ||
-            !newInstanceData.endDate
-          }
+          disabled={newInstanceData.quantity <= 0 || !newInstanceData.endDate}
         >
           Guardar
         </Button>

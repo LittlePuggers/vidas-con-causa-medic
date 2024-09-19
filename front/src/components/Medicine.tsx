@@ -42,11 +42,26 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
 
   useEffect(() => {
     loadInstances(numberID, setInventory);
-  }, [inventory]);
+  }, []);
 
   if (!product) {
     return <Typography variant="h5">Product not found</Typography>;
   }
+
+  const updateInventory = (newInstance: Instance) => {
+    setInventory((prevInventory) => {
+      const index = prevInventory.findIndex((i) => i.id === newInstance.id);
+      if (index > -1) {
+        // Update existing instance
+        const updatedInventory = [...prevInventory];
+        updatedInventory[index] = newInstance;
+        return updatedInventory;
+      } else {
+        // Add new instance
+        return [...prevInventory, newInstance];
+      }
+    });
+  };
 
   return (
     <>
@@ -67,6 +82,7 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
               <Inventory
                 medicineInfo={medicineInfo}
                 inventory={inventory}
+                onUpdateInventory={updateInventory}
               ></Inventory>
             </Item>
           </Grid>

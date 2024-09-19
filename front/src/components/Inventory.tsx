@@ -12,11 +12,12 @@ import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
 import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
-import {updateInstance} from '../api';
+import {createInstance, updateInstance} from '../api';
 
 interface InventoryProps {
   medicineInfo: {name: string; id: number; unit: string};
   inventory: Instance[];
+  onUpdateInventory: any;
 }
 
 function createData(id: number, expiration: string, qty: number, btns: number) {
@@ -61,7 +62,11 @@ const FabTeal = styled(Fab)(() => ({
   },
 }));
 
-export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
+export const Inventory = ({
+  medicineInfo,
+  inventory,
+  onUpdateInventory,
+}: InventoryProps) => {
   inventory.sort((a, b) => {
     const dateA = new Date(a.endDate).getTime();
     const dateB = new Date(b.endDate).getTime();
@@ -121,6 +126,10 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
     setOpen(false);
   };
 
+  const handleInstanceSaved = (newInstance: Instance) => {
+    onUpdateInventory(newInstance);
+  };
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -150,6 +159,7 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
             medicineInfo={medicineInfo}
             mode={mode}
             instance={selectedInstance}
+            onSave={handleInstanceSaved}
           />
         ) : (
           <NewInstanceForm
@@ -158,6 +168,7 @@ export const Inventory = ({medicineInfo, inventory}: InventoryProps) => {
             medicineInfo={medicineInfo}
             mode={mode}
             instance={null}
+            onSave={handleInstanceSaved}
           />
         )}
       </BoxHead>
