@@ -21,6 +21,7 @@ model Medicine {
   stock         Int
   bestUsedBy    String
   concentration String
+  unit          String
   instances     Instance[]
 }
 
@@ -29,7 +30,6 @@ model Instance {
   medicineId Int
   endDate    String
   quantity   Int
-  unit       String
   medicine   Medicine @relation(fields: [medicineId], references: [id])
 
   @@index([medicineId], map: "Instance_medicineId_fkey")

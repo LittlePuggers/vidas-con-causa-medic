@@ -58,7 +58,6 @@ export const NewInstanceForm = ({
         ...newInstanceData,
         id: instance.id,
         quantity: instance.quantity,
-        unit: instance.unit,
         endDate: instance.endDate,
       });
     } else if (mode === 'create') {

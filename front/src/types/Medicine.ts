@@ -6,4 +6,5 @@ export interface Medicine {
   category: string;
   stock: number;
   bestUsedBy: string;
+  unit: string;
 }

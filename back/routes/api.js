@@ -27,6 +27,7 @@ router.post('/medicines', async (req, res) => {
     concentration,
     bestUsedBy,
     stock,
+    unit,
     // instances,
   } = req.body;
   try {
@@ -38,6 +39,7 @@ router.post('/medicines', async (req, res) => {
         concentration,
         bestUsedBy,
         stock,
+        unit,
         // instances,
       },
     });
@@ -73,7 +75,6 @@ router.post('/medicines/:id/items', async (req, res) => {
         medicineId,
         endDate,
         quantity,
-        unit,
       },
     });
     res.status(201).json(newInstance);
@@ -92,7 +93,6 @@ router.put('/medicines/:medicineId/items/:id', async (req, res) => {
       data: {
         endDate,
         quantity,
-        unit,
       },
     });
     res.status(201).json(updateInstance);
