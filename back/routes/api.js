@@ -68,7 +68,7 @@ router.get('/medicines/:id/items', async (req, res) => {
 
 // Save new instance
 router.post('/medicines/:id/items', async (req, res) => {
-  const {medicineId, endDate, quantity, unit} = req.body;
+  const {medicineId, endDate, quantity} = req.body;
   try {
     const newInstance = await prisma.instance.create({
       data: {
@@ -77,6 +77,17 @@ router.post('/medicines/:id/items', async (req, res) => {
         quantity,
       },
     });
+    // Recalculate total stock
+    const totalStock = await prisma.instance.aggregate({
+      where: {medicineId: parseInt(medicineId)},
+      _sum: {quantity: true},
+    });
+    // Update medicine stock
+    const updatedMedicine = await prisma.medicine.update({
+      where: {id: parseInt(medicineId)},
+      data: {stock: totalStock._sum.quantity || 0},
+    });
+
     res.status(201).json(newInstance);
   } catch (error) {
     res.status(400).json({error: error.message});
@@ -86,14 +97,24 @@ router.post('/medicines/:id/items', async (req, res) => {
 // Update instance
 router.put('/medicines/:medicineId/items/:id', async (req, res) => {
   const {medicineId, id} = req.params;
-  const {endDate, quantity, unit} = req.body;
+  const {endDate, quantity} = req.body;
   try {
     const updateInstance = await prisma.instance.update({
-      where: {medicineId: parseInt(medicineId), id: parseInt(id)},
+      where: {id: parseInt(id)},
       data: {
         endDate,
         quantity,
       },
+    });
+    // Recalculate total stock
+    const totalStock = await prisma.instance.aggregate({
+      where: {medicineId: parseInt(medicineId)},
+      _sum: {quantity: true},
+    });
+    // Update medicine stock
+    await prisma.medicine.update({
+      where: {id: parseInt(medicineId)},
+      data: {stock: totalStock._sum.quantity || 0},
     });
     res.status(201).json(updateInstance);
   } catch (error) {
