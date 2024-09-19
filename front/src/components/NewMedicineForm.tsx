@@ -36,6 +36,8 @@ const categories = [
   'Oftálmico',
 ];
 
+const instanceUnits = ['Tabletas', 'Mililitros', 'Gramos'];
+
 export const NewMedicineForm = ({
   open,
   handleClose,
@@ -47,20 +49,44 @@ export const NewMedicineForm = ({
     components: '',
     concNumber: 0,
     concUnit: '',
+    unit: '',
   });
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedInstanceUnit, setSelectedInstanceUnit] = useState('');
 
   const handleChange = (e: {target: {name: any; value: any}}) => {
     const {name, value} = e.target;
     setNewMedicineData({...newMedicineData, [name]: value});
   };
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const handleCategoryChange = (event: {target: {name: any; value: any}}) => {
+    const {name, value} = event.target;
+    if (name === 'category') {
+      setSelectedCategories(
+        typeof value === 'string' ? value.split(', ') : value
+      );
+    } else if (name === 'instance-unit') {
+      setSelectedInstanceUnit(value);
+    }
+  };
 
-  const handleCategoryChange = (event: {target: {value: any}}) => {
-    const value = event.target.value;
-    setSelectedCategories(
-      typeof value === 'string' ? value.split(', ') : value
-    );
+  const resetForm = () => {
+    setNewMedicineData({
+      name: '',
+      category: '',
+      components: '',
+      concNumber: 0,
+      concUnit: '',
+      unit: '',
+    });
+    setSelectedCategories([]);
+    setSelectedInstanceUnit('');
+  };
+
+  const handleFormClose = () => {
+    resetForm();
+    handleClose();
   };
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
@@ -71,6 +97,7 @@ export const NewMedicineForm = ({
       concentration:
         newMedicineData.concNumber + ' ' + newMedicineData.concUnit,
       category: selectedCategories.join(', '),
+      unit: selectedInstanceUnit,
       stock: 0,
       bestUsedBy: '',
     };
@@ -79,7 +106,8 @@ export const NewMedicineForm = ({
       !newMedicineData2.name.trim() ||
       !selectedCategories.length ||
       !newMedicineData2.components.trim() ||
-      !newMedicineData2.concentration.trim()
+      !newMedicineData2.concentration.trim() ||
+      !newMedicineData2.unit.trim()
     ) {
       alert('Please fill in all the required fields.');
       return;
@@ -89,14 +117,7 @@ export const NewMedicineForm = ({
       const response = await createMedicine(newMedicineData2);
       console.log('Medicine saved:', response.data);
       onSubmit(response.data);
-      setNewMedicineData({
-        name: '',
-        category: '',
-        components: '',
-        concNumber: 0,
-        concUnit: '',
-      });
-      setSelectedCategories([]);
+      resetForm();
       handleClose();
     } catch (error) {
       console.error('Error saving medicine: ', error);
@@ -106,7 +127,7 @@ export const NewMedicineForm = ({
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={handleFormClose}
       PaperProps={{
         component: 'form',
         sx: {padding: '1rem 4rem', border: '2px solid #209EBB'},
@@ -134,6 +155,7 @@ export const NewMedicineForm = ({
           <Select
             labelId="demo-multiple-checkbox-label"
             id="category"
+            name="category"
             multiple
             value={selectedCategories}
             onChange={handleCategoryChange}
@@ -190,10 +212,30 @@ export const NewMedicineForm = ({
               </Select>
             </Box>
           </RowBox>
+
+          <DialogContentStyledText>
+            Unidad de instancias
+          </DialogContentStyledText>
+          <Select
+            labelId="demo-radio-label"
+            id="instance-unit"
+            name="instance-unit"
+            value={selectedInstanceUnit}
+            onChange={handleCategoryChange}
+            renderValue={(selectedInstanceUnit) => selectedInstanceUnit}
+            fullWidth
+            displayEmpty
+          >
+            {instanceUnits.map((instanceUnit) => (
+              <MenuItem key={instanceUnit} value={instanceUnit}>
+                <ListItemText primary={instanceUnit} />
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} sx={{color: 'gray'}}>
+        <Button onClick={handleFormClose} sx={{color: 'gray'}}>
           Cancelar
         </Button>
         <Button
