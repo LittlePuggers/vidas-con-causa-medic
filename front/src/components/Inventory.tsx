@@ -12,7 +12,7 @@ import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
 import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
-import {createInstance, updateInstance} from '../api';
+import {updateInstance} from '../api';
 
 interface InventoryProps {
   medicineInfo: {name: string; id: number; unit: string};
@@ -20,9 +20,9 @@ interface InventoryProps {
   onUpdateInventory: any;
 }
 
-function createData(id: number, expiration: string, qty: number, btns: number) {
-  return {id, expiration, qty, btns};
-}
+// function createData(id: number, expiration: string, qty: number, btns: number) {
+//   return {id, expiration, qty, btns};
+// }
 
 const BoxHead = styled(Box)(() => ({
   display: 'flex',
@@ -33,6 +33,7 @@ const BoxHead = styled(Box)(() => ({
     marginTop: '2em',
   },
 }));
+
 const TableCellHead = styled(TableCell)(() => ({
   fontSize: '1em',
   fontWeight: 400,
@@ -40,6 +41,7 @@ const TableCellHead = styled(TableCell)(() => ({
   padding: '1em',
   paddingTop: '0',
 }));
+
 const TableCellBody = styled(TableCell)(() => ({
   fontFamily: 'Roboto',
   fontSize: '1.2em',
@@ -47,6 +49,7 @@ const TableCellBody = styled(TableCell)(() => ({
   color: '#00000099',
   padding: '0 1em',
 }));
+
 const FabOrange = styled(Fab)(() => ({
   backgroundColor: '#FB8502',
   color: 'white',
@@ -54,6 +57,7 @@ const FabOrange = styled(Fab)(() => ({
     backgroundColor: '#E07702',
   },
 }));
+
 const FabTeal = styled(Fab)(() => ({
   backgroundColor: '#209EBB',
   color: 'white',
@@ -72,44 +76,58 @@ export const Inventory = ({
     const dateB = new Date(b.endDate).getTime();
     return dateA - dateB;
   });
-  const rows = inventory.map((item) => {
-    return createData(item.id, item.endDate, item.quantity, 3);
-  });
+
+  // const rows = inventory.map((item) => {
+  //   return createData(item.id, item.endDate, item.quantity, 3);
+  // });
 
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<'create' | 'edit'>('create');
   const [selectedInstance, setSelectedInstance] = useState<Instance | null>(
     null
   );
+  const [updatedInventory, setUpdatedInventory] = useState(inventory);
   const [clickCount, setClickCount] = useState({add: 0, remove: 0});
   const timeoutRef = useRef<number | null>(null);
+  const clickCountRef = useRef({add: 0, remove: 0});
+  const initialQtyRef = useRef<number | null>(null);
 
   const handleChangeQty = (instance: Instance, change: 'add' | 'remove') => {
-    let newQty: number;
-    let newInstanceData = instance;
-    setClickCount((prevCount) => ({
-      ...prevCount,
-      [change]: prevCount[change] + 1,
-    }));
+    if (initialQtyRef.current === null) {
+      initialQtyRef.current = instance.quantity;
+    }
+
+    const updatedQty =
+      change === 'add' ? instance.quantity + 1 : instance.quantity - 1;
+    const newInventory = updatedInventory.map((inv) =>
+      inv.id === instance.id ? {...inv, quantity: updatedQty} : inv
+    );
+    setUpdatedInventory(newInventory);
+
+    clickCountRef.current = {
+      ...clickCountRef.current,
+      [change]: clickCountRef.current[change] + 1,
+    };
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
+
     timeoutRef.current = window.setTimeout(async () => {
-      setClickCount((prevCount) => {
-        newQty = instance.quantity + prevCount.add - prevCount.remove;
-        return {add: 0, remove: 0};
-      });
-      if (instance.quantity !== newQty) {
-        newInstanceData = {...newInstanceData, quantity: newQty};
-        const response = await updateInstance(
-          medicineInfo.id,
-          instance.id,
-          newInstanceData
-        );
-        console.log(response);
+      const totalChange =
+        clickCountRef.current.add - clickCountRef.current.remove;
+      const finalQty = initialQtyRef.current! + totalChange;
+
+      if (initialQtyRef.current !== finalQty) {
+        const updatedInstance = {...instance, quantity: finalQty};
+        await updateInstance(medicineInfo.id, instance.id, updatedInstance);
+        onUpdateInventory(updatedInstance);
+        clickCountRef.current = {add: 0, remove: 0};
+        initialQtyRef.current = null;
+        console.log('Quantity was successfully changed');
       } else console.log('Quantity was not changed');
-    }, 1000);
+      return {add: 0, remove: 0};
+    }, 3000);
   };
 
   const handleSelectInstance = (instance: Instance | null) => {
@@ -182,50 +200,30 @@ export const Inventory = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {updatedInventory.map((instance) => (
               <TableRow
-                key={row.id}
+                key={instance.id}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
               >
                 <TableCellBody component="th" scope="row">
-                  {row.expiration}
+                  {instance.endDate}
                 </TableCellBody>
                 <TableCellBody>
-                  {row.qty} {medicineInfo.unit}
+                  {instance.quantity} {medicineInfo.unit}
                 </TableCellBody>
                 <TableCellBody align="right">
                   <Box sx={{'& > :not(style)': {m: 1}}}>
                     <FabTeal
                       aria-label="add"
                       size="small"
-                      onClick={() =>
-                        handleChangeQty(
-                          {
-                            medicineId: medicineInfo.id,
-                            endDate: row.expiration,
-                            id: row.id,
-                            quantity: row.qty,
-                          },
-                          'add'
-                        )
-                      }
+                      onClick={() => handleChangeQty(instance, 'add')}
                     >
                       <AddIcon />
                     </FabTeal>
                     <FabOrange
                       aria-label="subtract"
                       size="small"
-                      onClick={() =>
-                        handleChangeQty(
-                          {
-                            medicineId: medicineInfo.id,
-                            endDate: row.expiration,
-                            id: row.id,
-                            quantity: row.qty,
-                          },
-                          'remove'
-                        )
-                      }
+                      onClick={() => handleChangeQty(instance, 'remove')}
                     >
                       <RemoveIcon />
                     </FabOrange>
@@ -234,12 +232,7 @@ export const Inventory = ({
                       aria-label="edit"
                       size="small"
                       onClick={() => {
-                        handleSelectInstance({
-                          id: row.id,
-                          medicineId: medicineInfo.id,
-                          endDate: row.expiration,
-                          quantity: row.qty,
-                        });
+                        handleSelectInstance(instance);
                       }}
                     >
                       <EditIcon />
