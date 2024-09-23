@@ -10,7 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
-import {useEffect, useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
 import {updateInstance} from '../api';
 
@@ -19,10 +19,6 @@ interface InventoryProps {
   inventory: Instance[];
   onUpdateInventory: any;
 }
-
-// function createData(id: number, expiration: string, qty: number, btns: number) {
-//   return {id, expiration, qty, btns};
-// }
 
 const BoxHead = styled(Box)(() => ({
   display: 'flex',
@@ -77,24 +73,24 @@ export const Inventory = ({
     return dateA - dateB;
   });
 
-  // const rows = inventory.map((item) => {
-  //   return createData(item.id, item.endDate, item.quantity, 3);
-  // });
-
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<'create' | 'edit'>('create');
   const [selectedInstance, setSelectedInstance] = useState<Instance | null>(
     null
   );
   const [updatedInventory, setUpdatedInventory] = useState(inventory);
-  const [clickCount, setClickCount] = useState({add: 0, remove: 0});
-  const timeoutRef = useRef<number | null>(null);
-  const clickCountRef = useRef({add: 0, remove: 0});
-  const initialQtyRef = useRef<number | null>(null);
+  const clickCountMap = useRef<{[key: number]: {add: number; remove: number}}>(
+    {}
+  );
+  const timeoutMap = useRef<{[key: number]: number | null}>({});
+  const initialQtyMap = useRef<{[key: number]: number | null}>({});
 
   const handleChangeQty = (instance: Instance, change: 'add' | 'remove') => {
-    if (initialQtyRef.current === null) {
-      initialQtyRef.current = instance.quantity;
+    const instanceId = instance.id;
+
+    if (!initialQtyMap.current[instanceId]) {
+      initialQtyMap.current[instanceId] = instance.quantity;
+      clickCountMap.current[instanceId] = {add: 0, remove: 0};
     }
 
     const updatedQty =
@@ -104,30 +100,31 @@ export const Inventory = ({
     );
     setUpdatedInventory(newInventory);
 
-    clickCountRef.current = {
-      ...clickCountRef.current,
-      [change]: clickCountRef.current[change] + 1,
+    clickCountMap.current[instanceId] = {
+      ...clickCountMap.current[instanceId],
+      [change]: clickCountMap.current[instanceId][change] + 1,
     };
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    if (timeoutMap.current[instanceId]) {
+      clearTimeout(timeoutMap.current[instanceId]!);
     }
 
-    timeoutRef.current = window.setTimeout(async () => {
+    timeoutMap.current[instanceId] = window.setTimeout(async () => {
       const totalChange =
-        clickCountRef.current.add - clickCountRef.current.remove;
-      const finalQty = initialQtyRef.current! + totalChange;
+        clickCountMap.current[instanceId].add -
+        clickCountMap.current[instanceId].remove;
+      const finalQty = initialQtyMap.current[instanceId]! + totalChange;
 
-      if (initialQtyRef.current !== finalQty) {
+      if (initialQtyMap.current[instanceId] !== finalQty) {
         const updatedInstance = {...instance, quantity: finalQty};
         await updateInstance(medicineInfo.id, instance.id, updatedInstance);
         onUpdateInventory(updatedInstance);
-        clickCountRef.current = {add: 0, remove: 0};
-        initialQtyRef.current = null;
         console.log('Quantity was successfully changed');
       } else console.log('Quantity was not changed');
-      return {add: 0, remove: 0};
-    }, 3000);
+      clickCountMap.current[instanceId] = {add: 0, remove: 0};
+      initialQtyMap.current[instanceId] = null;
+      timeoutMap.current[instanceId] = null;
+    }, 1000);
   };
 
   const handleSelectInstance = (instance: Instance | null) => {
@@ -147,14 +144,6 @@ export const Inventory = ({
   const handleInstanceSaved = (newInstance: Instance) => {
     onUpdateInventory(newInstance);
   };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   return (
     <>
