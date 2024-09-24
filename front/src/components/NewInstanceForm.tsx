@@ -14,8 +14,9 @@ import {LocalizationProvider, DatePicker} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, {Dayjs} from 'dayjs';
 import {dialogTitleStyles} from './componentStyles';
-import {createInstance, deleteInstance, updateInstance} from '../api';
+import {createInstance, updateInstance} from '../api';
 import {Instance} from '../types/Instance';
+import {ConfirmModal} from './ConfirmModal';
 
 interface NewInstanceFormProps {
   open: boolean;
@@ -68,6 +69,12 @@ export const NewInstanceForm = ({
     }
   }, [mode, instance]);
 
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteInstanceId, setDeleteInstanceId] = useState(0);
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+
   const handleChange = (e: {target: {name: any; value: any}}) => {
     const {name, value} = e.target;
     setNewInstanceData({
@@ -84,21 +91,9 @@ export const NewInstanceForm = ({
     }));
   };
 
-  const handleDelete = async (id: number) => {
-    const confirmation = confirm(
-      `Seguro que quieres eliminar esta instancia? ${id}`
-    );
-    try {
-      if (confirmation) {
-        const response = await deleteInstance(medicineInfo.id, id);
-        console.log('Instance deleted:', response);
-        handleClose();
-      } else if (!confirmation) {
-        console.log('Instance not deleted');
-      }
-    } catch (error) {
-      console.log('Error deleting instance', error);
-    }
+  const handleOpenDelete = (id: number) => {
+    setDeleteInstanceId(id);
+    setOpenDelete(true);
   };
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
@@ -206,12 +201,20 @@ export const NewInstanceForm = ({
           <Button
             color="warning"
             variant="contained"
-            onClick={() => handleDelete(newInstanceData.id)}
+            onClick={() => handleOpenDelete(newInstanceData.id)}
           >
             Eliminar
           </Button>
         ) : null}
       </DialogActions>
+      <ConfirmModal
+        open={openDelete}
+        handleClose={handleClose}
+        handleCloseConfirmModal={handleCloseDelete}
+        medicineId={medicineInfo.id}
+        deleteInstanceId={deleteInstanceId}
+        text="Estas seguro que deseas eliminar esta instancia?"
+      />
     </Dialog>
   );
 };
