@@ -10,7 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
 import {updateInstance} from '../api';
 
@@ -72,6 +72,18 @@ export const Inventory = ({
     const dateB = new Date(b.endDate).getTime();
     return dateA - dateB;
   });
+
+  useEffect(() => {
+    return () => {
+      if (timeoutMap.current) {
+        Object.values(timeoutMap.current).forEach((timeoutId) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+        });
+      }
+    };
+  }, []);
 
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<'create' | 'edit'>('create');
