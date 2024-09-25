@@ -213,7 +213,7 @@ export const NewInstanceForm = ({
         handleCloseConfirmModal={handleCloseDelete}
         medicineId={medicineInfo.id}
         deleteInstanceId={deleteInstanceId}
-        text="Estas seguro que deseas eliminar esta instancia?"
+        text="¿Estas seguro que deseas eliminar esta instancia?"
       />
     </Dialog>
   );
