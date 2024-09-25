@@ -6,45 +6,20 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {deleteInstance} from '../api';
 import {Box} from '@mui/material';
 
 interface ConfirmModalProps {
-  open: boolean;
-  handleClose: () => void;
-  handleCloseConfirmModal: () => void;
-  medicineId: number;
-  deleteInstanceId: number;
   text: string;
+  onConfirm: () => void;
+  onCancel: () => void;
 }
 
-export function ConfirmModal({
-  open,
-  handleClose,
-  handleCloseConfirmModal,
-  medicineId,
-  deleteInstanceId,
-  text,
-}: ConfirmModalProps) {
-  const handleDelete = async () => {
-    try {
-      if (deleteInstanceId) {
-        const response = await deleteInstance(medicineId, deleteInstanceId);
-        console.log('Instance deleted:', response);
-        handleCloseConfirmModal();
-        handleClose();
-      } else if (!deleteInstanceId) {
-        console.log('Instance not deleted');
-      }
-    } catch (error) {
-      console.log('Error deleting instance', error);
-    }
-  };
+export function ConfirmModal({text, onConfirm, onCancel}: ConfirmModalProps) {
   return (
     <React.Fragment>
       <Dialog
-        open={open}
-        onClose={handleCloseConfirmModal}
+        open
+        onClose={onCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         PaperProps={{
@@ -89,14 +64,14 @@ export function ConfirmModal({
               },
             }}
             variant="outlined"
-            onClick={handleCloseConfirmModal}
+            onClick={onCancel}
           >
             Cancelar
           </Button>
           <Button
             color="error"
             variant="contained"
-            onClick={handleDelete}
+            onClick={onConfirm}
             autoFocus
           >
             Confirmar

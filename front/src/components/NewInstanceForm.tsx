@@ -25,6 +25,7 @@ interface NewInstanceFormProps {
   mode: 'edit' | 'create';
   instance: Instance | null;
   onSave: any;
+  onDelete: any;
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -44,6 +45,7 @@ export const NewInstanceForm = ({
   mode,
   instance,
   onSave,
+  onDelete,
 }: NewInstanceFormProps) => {
   const [newInstanceData, setNewInstanceData] = useState({
     id: 0,
@@ -69,18 +71,13 @@ export const NewInstanceForm = ({
     }
   }, [mode, instance]);
 
-  const [openDelete, setOpenDelete] = useState(false);
-  const [deleteInstanceId, setDeleteInstanceId] = useState(0);
-  const handleCloseDelete = () => {
-    setOpenDelete(false);
-  };
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const handleChange = (e: {target: {name: any; value: any}}) => {
     const {name, value} = e.target;
     setNewInstanceData({
       ...newInstanceData,
       [name]: value,
-      // [name]: name === 'quantity' ? +value : value,
     });
   };
 
@@ -89,11 +86,6 @@ export const NewInstanceForm = ({
       ...prevData,
       endDate: date ? date.toISOString().slice(0, 10) : '',
     }));
-  };
-
-  const handleOpenDelete = (id: number) => {
-    setDeleteInstanceId(id);
-    setOpenDelete(true);
   };
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
@@ -132,6 +124,13 @@ export const NewInstanceForm = ({
     } catch (error) {
       console.error('Error saving instance: ', error);
     }
+  };
+
+  const handleOpenConfirmation = () => setIsConfirmationOpen(true);
+  const handleCloseConfirmation = () => setIsConfirmationOpen(false);
+  const handleConfirmDelete = () => {
+    onDelete(instance?.id);
+    handleCloseConfirmation();
   };
 
   return (
@@ -201,20 +200,19 @@ export const NewInstanceForm = ({
           <Button
             color="warning"
             variant="contained"
-            onClick={() => handleOpenDelete(newInstanceData.id)}
+            onClick={handleOpenConfirmation}
           >
             Eliminar
           </Button>
         ) : null}
       </DialogActions>
-      <ConfirmModal
-        open={openDelete}
-        handleClose={handleClose}
-        handleCloseConfirmModal={handleCloseDelete}
-        medicineId={medicineInfo.id}
-        deleteInstanceId={deleteInstanceId}
-        text="¿Estas seguro que deseas eliminar esta instancia?"
-      />
+      {isConfirmationOpen && (
+        <ConfirmModal
+          text="¿Estas seguro que deseas eliminar esta instancia?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCloseConfirmation}
+        />
+      )}
     </Dialog>
   );
 };

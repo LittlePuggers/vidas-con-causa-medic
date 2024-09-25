@@ -12,7 +12,7 @@ import {Box, Fab, Typography, styled} from '@mui/material';
 import {NewInstanceForm} from './NewInstanceForm';
 import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
-import {updateInstance} from '../api';
+import {deleteInstance, updateInstance} from '../api';
 
 interface InventoryProps {
   medicineInfo: {name: string; id: number; unit: string};
@@ -157,6 +157,20 @@ export const Inventory = ({
     onUpdateInventory(newInstance);
   };
 
+  const handleDeleteInstance = async (instanceId: number) => {
+    try {
+      await deleteInstance(medicineInfo.id, instanceId);
+      console.log('Instance deleted:', instanceId);
+      const updatedInventory = inventory.filter(
+        (instance) => instance.id !== instanceId
+      );
+      setUpdatedInventory(updatedInventory);
+      handleClose();
+    } catch (error) {
+      console.log('Error deleting instance', error);
+    }
+  };
+
   return (
     <>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
@@ -179,6 +193,7 @@ export const Inventory = ({
             mode={mode}
             instance={selectedInstance}
             onSave={handleInstanceSaved}
+            onDelete={handleDeleteInstance}
           />
         ) : (
           <NewInstanceForm
@@ -188,6 +203,7 @@ export const Inventory = ({
             mode={mode}
             instance={null}
             onSave={handleInstanceSaved}
+            onDelete={undefined}
           />
         )}
       </BoxHead>
