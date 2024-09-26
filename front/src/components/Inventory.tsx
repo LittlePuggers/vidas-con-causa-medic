@@ -156,6 +156,15 @@ export const Inventory = ({
 
   const handleInstanceSaved = (newInstance: Instance) => {
     onUpdateInventory(newInstance);
+    const updatedInventory = [...inventory, newInstance];
+    updatedInventory.sort((a, b) => {
+      const dateA = new Date(a.endDate).getTime();
+      const dateB = new Date(b.endDate).getTime();
+      return dateA - dateB;
+    });
+    setUpdatedInventory(updatedInventory);
+    setSnackbarMsg('Instance added successfully!');
+    setOpenSnackbar(true);
   };
 
   const handleDeleteInstance = async (instanceId: number) => {
