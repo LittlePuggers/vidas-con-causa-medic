@@ -13,6 +13,7 @@ import {NewInstanceForm} from './NewInstanceForm';
 import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
 import {deleteInstance, updateInstance} from '../api';
+import {SnackbarAlert} from './SnackbarAlert';
 
 interface InventoryProps {
   medicineInfo: {name: string; id: number; unit: string};
@@ -73,18 +74,6 @@ export const Inventory = ({
     return dateA - dateB;
   });
 
-  useEffect(() => {
-    return () => {
-      if (timeoutMap.current) {
-        Object.values(timeoutMap.current).forEach((timeoutId) => {
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
-        });
-      }
-    };
-  }, []);
-
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<'create' | 'edit'>('create');
   const [selectedInstance, setSelectedInstance] = useState<Instance | null>(
@@ -96,6 +85,18 @@ export const Inventory = ({
   );
   const timeoutMap = useRef<{[key: number]: number | null}>({});
   const initialQtyMap = useRef<{[key: number]: number | null}>({});
+
+  useEffect(() => {
+    return () => {
+      if (timeoutMap.current) {
+        Object.values(timeoutMap.current).forEach((timeoutId) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+        });
+      }
+    };
+  }, []);
 
   const handleChangeQty = (instance: Instance, change: 'add' | 'remove') => {
     const instanceId = instance.id;
@@ -166,10 +167,15 @@ export const Inventory = ({
       );
       setUpdatedInventory(updatedInventory);
       handleClose();
+      setSnackbarMsg('Instance deleted successfully!');
+      setOpenSnackbar(true);
     } catch (error) {
       console.log('Error deleting instance', error);
     }
   };
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
 
   return (
     <>
@@ -261,6 +267,11 @@ export const Inventory = ({
           </TableBody>
         </Table>
       </TableContainer>
+      <SnackbarAlert
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        msg={snackbarMsg}
+      />
     </>
   );
 };
