@@ -155,15 +155,30 @@ export const Inventory = ({
   };
 
   const handleInstanceSaved = (newInstance: Instance) => {
-    onUpdateInventory(newInstance);
-    const updatedInventory = [...inventory, newInstance];
-    updatedInventory.sort((a, b) => {
-      const dateA = new Date(a.endDate).getTime();
-      const dateB = new Date(b.endDate).getTime();
-      return dateA - dateB;
-    });
-    setUpdatedInventory(updatedInventory);
-    setSnackbarMsg('Instance added successfully!');
+    if (mode === 'create') {
+      onUpdateInventory(newInstance);
+      const updatedInventory = [...inventory, newInstance];
+      updatedInventory.sort((a, b) => {
+        const dateA = new Date(a.endDate).getTime();
+        const dateB = new Date(b.endDate).getTime();
+        return dateA - dateB;
+      });
+      setUpdatedInventory(updatedInventory);
+      setSnackbarMsg('Instance added successfully!');
+    } else if (mode === 'edit') {
+      onUpdateInventory(newInstance);
+      const updatedInventory = inventory.filter(
+        (instance) => instance.id !== newInstance.id
+      );
+      setUpdatedInventory(
+        [...updatedInventory, newInstance].sort((a, b) => {
+          const dateA = new Date(a.endDate).getTime();
+          const dateB = new Date(b.endDate).getTime();
+          return dateA - dateB;
+        })
+      );
+      setSnackbarMsg('Instance updated successfully!');
+    }
     setOpenSnackbar(true);
   };
 
@@ -182,6 +197,12 @@ export const Inventory = ({
       console.log('Error deleting instance', error);
     }
   };
+
+  // const handleEditInstance = (instance: Instance) => {
+  //   onUpdateInventory(instance);
+
+  //   setUpdatedInventory()
+  // };
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
@@ -209,6 +230,7 @@ export const Inventory = ({
             instance={selectedInstance}
             onSave={handleInstanceSaved}
             onDelete={handleDeleteInstance}
+            // onEdit={handleEditInstance}
           />
         ) : (
           <NewInstanceForm
@@ -219,6 +241,7 @@ export const Inventory = ({
             instance={null}
             onSave={handleInstanceSaved}
             onDelete={undefined}
+            // onEdit={handleEditInstance}
           />
         )}
       </BoxHead>

@@ -26,6 +26,7 @@ interface NewInstanceFormProps {
   instance: Instance | null;
   onSave: any;
   onDelete: any;
+  // onEdit: any;
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -46,7 +47,8 @@ export const NewInstanceForm = ({
   instance,
   onSave,
   onDelete,
-}: NewInstanceFormProps) => {
+}: // onEdit,
+NewInstanceFormProps) => {
   const [newInstanceData, setNewInstanceData] = useState({
     id: 0,
     medicineId: medicineInfo.id,
