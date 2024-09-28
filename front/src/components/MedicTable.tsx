@@ -7,6 +7,7 @@ import componentStyles from './componentStyles';
 import {SearchBar} from './SearchBar.tsx';
 import {useState} from 'react';
 import {NewMedicineForm} from './NewMedicineForm';
+import {SnackbarAlert} from './SnackbarAlert.tsx';
 
 interface MedicTableProps {
   medicines: MedicineType[];
@@ -57,6 +58,8 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
   ];
 
   const [open, setOpen] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -69,6 +72,8 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
   const handleFormSubmit = async (newMedicine: MedicineType) => {
     setMedicines([...medicines, newMedicine]);
     setOpen(false);
+    setOpenSnackbar(true);
+    setSnackbarMsg('New medicine added successfully!');
   };
 
   const handleSearch = (query: string) => {
@@ -104,6 +109,11 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
         pageSizeOptions={[10, 20, 30]}
         // checkboxSelection
         sx={gridStyles}
+      />
+      <SnackbarAlert
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        msg={snackbarMsg}
       />
     </div>
   );
