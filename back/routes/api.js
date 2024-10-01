@@ -49,6 +49,22 @@ router.post('/medicines', async (req, res) => {
   }
 });
 
+// Update medicine
+router.put('/medicines/:id', async (req, res) => {
+  const {id} = req.params;
+  const {data} = req.body;
+  console.log(data);
+  try {
+    await prisma.medicine.update({
+      where: {id: parseInt(id)},
+      data: {data},
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({error: error.message});
+  }
+});
+
 // Get instances of medicine
 router.get('/medicines/:id/items', async (req, res) => {
   const medicineId = parseInt(req.params.id);

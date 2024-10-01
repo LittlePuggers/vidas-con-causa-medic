@@ -12,6 +12,7 @@ import {Inventory} from './Inventory';
 import {loadInstances} from '../utils';
 import {useEffect, useState} from 'react';
 import {Instance} from '../types/Instance';
+import {updateMedicine} from '../api';
 
 interface MedicineProps {
   products: MedicineType[];
@@ -63,6 +64,30 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
     });
   };
 
+  const handleMedEditSave = async (label: string, newValue: string) => {
+    let data = {};
+    switch (label) {
+      case 'Concentración':
+        data = {concentration: newValue};
+        break;
+      case 'Componentes':
+        data = {components: newValue};
+        break;
+      case 'Categoría':
+        data = {category: newValue};
+        break;
+      case 'Unidades':
+        data = {unit: newValue};
+        break;
+    }
+    console.log(data);
+    try {
+      await updateMedicine(numberID, data);
+    } catch (error) {
+      console.log('Error updating medicine', error);
+    }
+  };
+
   return (
     <>
       <Box sx={{flexGrow: 1}}>
@@ -71,7 +96,10 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} sx={{display: 'flex'}}>
             <Item>
-              <DescriptionList medicineInfo={product} />
+              <DescriptionList
+                medicineInfo={product}
+                handleSave={handleMedEditSave}
+              />
             </Item>
           </Grid>
           <Grid item xs={12} sm={6} sx={{display: 'flex'}}>

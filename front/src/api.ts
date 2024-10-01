@@ -21,6 +21,7 @@ export const updateMedicine = (
   id: number,
   data: Partial<Medicine>
 ): Promise<AxiosResponse<Medicine>> => api.put(`/medicines/${id}`, data);
+
 export const deleteMedicine = (id: number): Promise<void> =>
   api.delete(`/medicines/${id}`);
 
