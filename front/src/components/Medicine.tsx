@@ -80,7 +80,6 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
         data = {unit: newValue};
         break;
     }
-    console.log(data);
     try {
       await updateMedicine(numberID, data);
     } catch (error) {

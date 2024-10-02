@@ -50,17 +50,16 @@ router.post('/medicines', async (req, res) => {
 });
 
 // Update medicine
-router.put('/medicines/:id', async (req, res) => {
+router.patch('/medicines/:id', async (req, res) => {
   const {id} = req.params;
-  const {data} = req.body;
-  console.log(data);
+  const data = req.body;
   try {
-    await prisma.medicine.update({
+    const medicineUpdated = await prisma.medicine.update({
       where: {id: parseInt(id)},
-      data: {data},
+      data: data,
     });
+    res.status(201).json(medicineUpdated);
   } catch (error) {
-    console.error(error);
     res.status(400).json({error: error.message});
   }
 });
