@@ -13,12 +13,13 @@ import {NewInstanceForm} from './NewInstanceForm';
 import {useEffect, useRef, useState} from 'react';
 import {Instance} from '../types/Instance';
 import {deleteInstance, updateInstance} from '../api';
-import {SnackbarAlert} from './SnackbarAlert';
 
 interface InventoryProps {
   medicineInfo: {name: string; id: number; unit: string};
   inventory: Instance[];
   onUpdateInventory: any;
+  setOpenSnackbar: (arg0: boolean) => void;
+  setSnackbarMsg: (arg0: string) => void;
 }
 
 const BoxHead = styled(Box)(() => ({
@@ -67,6 +68,8 @@ export const Inventory = ({
   medicineInfo,
   inventory,
   onUpdateInventory,
+  setOpenSnackbar,
+  setSnackbarMsg,
 }: InventoryProps) => {
   inventory.sort((a, b) => {
     const dateA = new Date(a.endDate).getTime();
@@ -204,9 +207,6 @@ export const Inventory = ({
   //   setUpdatedInventory()
   // };
 
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState('');
-
   return (
     <>
       <BoxHead sx={{'& > :not(style)': {m: 1}}}>
@@ -299,11 +299,6 @@ export const Inventory = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <SnackbarAlert
-        open={openSnackbar}
-        setOpen={setOpenSnackbar}
-        msg={snackbarMsg}
-      />
     </>
   );
 };

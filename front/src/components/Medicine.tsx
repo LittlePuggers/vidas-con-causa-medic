@@ -13,6 +13,7 @@ import {loadInstances} from '../utils';
 import {useEffect, useState} from 'react';
 import {Instance} from '../types/Instance';
 import {updateMedicine} from '../api';
+import {SnackbarAlert} from './SnackbarAlert';
 
 interface MedicineProps {
   products: MedicineType[];
@@ -40,6 +41,9 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
     id: numberID,
     unit: product ? product.unit : '',
   };
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
 
   useEffect(() => {
     loadInstances(numberID, setInventory);
@@ -82,6 +86,8 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
     }
     try {
       await updateMedicine(numberID, data);
+      setSnackbarMsg('Medicine updated successfully!');
+      setOpenSnackbar(true);
     } catch (error) {
       console.log('Error updating medicine', error);
     }
@@ -110,11 +116,18 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
                 medicineInfo={medicineInfo}
                 inventory={inventory}
                 onUpdateInventory={updateInventory}
+                setOpenSnackbar={setOpenSnackbar}
+                setSnackbarMsg={setSnackbarMsg}
               ></Inventory>
             </Item>
           </Grid>
         </Grid>
       </Box>
+      <SnackbarAlert
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        msg={snackbarMsg}
+      />
     </>
   );
 };
