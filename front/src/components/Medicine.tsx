@@ -46,9 +46,19 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
   const [snackbarMsg, setSnackbarMsg] = useState('');
 
   useEffect(() => {
-    loadInstances(numberID, setInventory);
-  }, []);
+    const fetchInstances = async (id: number) => {
+      try {
+        await loadInstances(numberID, setInventory);
+      } catch (error) {
+        console.error('Error loading instances:', error);
+      }
+    };
+    fetchInstances(numberID);
+  }, [numberID]);
 
+  if (inventory.length === 0) {
+    return <p>Loading inventory...</p>;
+  }
   if (!product) {
     return <Typography variant="h5">Product not found</Typography>;
   }
