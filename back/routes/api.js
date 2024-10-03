@@ -4,6 +4,33 @@ import prisma from '../prisma.js'; // adjust the path as necessary
 
 const router = Router();
 
+const updateClosestExpirationDate = async (medicineId) => {
+  // Find the earliest expiration date from instances
+  const closestExpiration = await prisma.instance.findFirst({
+    where: {medicineId: parseInt(medicineId)}, // Filter by medicine ID
+    orderBy: {
+      endDate: 'asc', // Sort by the earliest expiration date
+    },
+    select: {
+      endDate: true, // Select only the expirationDate field
+    },
+  });
+
+  // If there are instances, update the closestExpirationDate field in Medicine
+  if (closestExpiration) {
+    await prisma.medicine.update({
+      where: {id: parseInt(medicineId)},
+      data: {bestUsedBy: closestExpiration.endDate},
+    });
+  } else {
+    // If no instances, reset closestExpirationDate to null
+    await prisma.medicine.update({
+      where: {id: parseInt(medicineId)},
+      data: {bestUsedBy: null},
+    });
+  }
+};
+
 // Get all medicines
 router.get('/medicines', async (req, res) => {
   try {
@@ -102,6 +129,8 @@ router.post('/medicines/:id/items', async (req, res) => {
       where: {id: parseInt(medicineId)},
       data: {stock: totalStock._sum.quantity || 0},
     });
+    // Update closest expiration date
+    await updateClosestExpirationDate(medicineId);
 
     res.status(201).json(newInstance);
   } catch (error) {
@@ -110,16 +139,13 @@ router.post('/medicines/:id/items', async (req, res) => {
 });
 
 // Update instance
-router.put('/medicines/:medicineId/items/:id', async (req, res) => {
+router.patch('/medicines/:medicineId/items/:id', async (req, res) => {
   const {medicineId, id} = req.params;
-  const {endDate, quantity} = req.body;
+  const data = req.body;
   try {
     const updateInstance = await prisma.instance.update({
       where: {id: parseInt(id)},
-      data: {
-        endDate,
-        quantity,
-      },
+      data: data,
     });
     // Recalculate total stock
     const totalStock = await prisma.instance.aggregate({
@@ -131,6 +157,9 @@ router.put('/medicines/:medicineId/items/:id', async (req, res) => {
       where: {id: parseInt(medicineId)},
       data: {stock: totalStock._sum.quantity || 0},
     });
+    // Update closest expiration date
+    await updateClosestExpirationDate(medicineId);
+
     res.status(201).json(updateInstance);
   } catch (error) {
     res.status(400).json({error: error.message});
@@ -144,6 +173,19 @@ router.delete('/medicines/:medicineId/items/:id', async (req, res) => {
     const deleteInstance = await prisma.instance.delete({
       where: {medicineId: parseInt(medicineId), id: parseInt(id)},
     });
+    // Recalculate total stock
+    const totalStock = await prisma.instance.aggregate({
+      where: {medicineId: parseInt(medicineId)},
+      _sum: {quantity: true},
+    });
+    // Update medicine stock
+    await prisma.medicine.update({
+      where: {id: parseInt(medicineId)},
+      data: {stock: totalStock._sum.quantity || 0},
+    });
+    // Update closest expiration date
+    await updateClosestExpirationDate(medicineId);
+
     res.status(201).json(deleteInstance);
   } catch (error) {
     res.status(400).json({error: error.message});

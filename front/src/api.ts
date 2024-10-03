@@ -36,9 +36,9 @@ export const createInstance = (
 export const updateInstance = (
   medicineId: number,
   id: number,
-  data: Instance
+  data: Partial<Instance>
 ): Promise<AxiosResponse<Instance>> =>
-  api.put(`/medicines/${medicineId}/items/${id}`, data);
+  api.patch(`/medicines/${medicineId}/items/${id}`, data);
 
 export const deleteInstance = (medicineId: number, id: number): Promise<void> =>
   api.delete(`/medicines/${medicineId}/items/${id}`);
