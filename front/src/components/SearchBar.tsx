@@ -5,7 +5,14 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import {useState} from 'react';
+import {Medicine} from '../types/Medicine';
+
+interface SearchBarProps {
+  medicines: Medicine[];
+  setFilteredMeds: (arg0: Medicine[]) => void;
+}
 
 const Search = styled('div')(({theme}) => ({
   position: 'relative',
@@ -39,6 +46,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    paddingRight: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
       width: '12ch',
@@ -49,24 +57,28 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
   },
 }));
 
-export const SearchBar = ({onSearch}: {onSearch: (query: string) => void}) => {
+export const SearchBar = ({medicines, setFilteredMeds}: SearchBarProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+    setSearchQuery(query);
 
-  const handleSearch = () => {
-    if (onSearch) {
-      onSearch(searchQuery);
+    if (query) {
+      const results = medicines.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredMeds(results);
+    } else {
+      setFilteredMeds(medicines);
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
+  const clearSearch = () => {
+    setSearchQuery('');
+    setFilteredMeds(medicines);
   };
+
   return (
     <Box sx={{flexGrow: 1}}>
       <AppBar position="static">
@@ -76,13 +88,14 @@ export const SearchBar = ({onSearch}: {onSearch: (query: string) => void}) => {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              // variant="outlined"
-              placeholder="Search..."
+              placeholder="Buscar..."
               value={searchQuery}
-              onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
+              onChange={handleSearch}
               fullWidth
               sx={{mr: 1}}
+              endAdornment={
+                <ClearIcon onClick={clearSearch} sx={{cursor: 'pointer'}} />
+              }
             />
           </Search>
         </Toolbar>

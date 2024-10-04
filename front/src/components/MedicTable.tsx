@@ -1,6 +1,6 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import {Link} from 'react-router-dom';
-import {Medicine as MedicineType} from '../types/Medicine.ts';
+import {Medicine} from '../types/Medicine.ts';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
@@ -10,8 +10,8 @@ import {NewMedicineForm} from './NewMedicineForm';
 import {SnackbarAlert} from './SnackbarAlert.tsx';
 
 interface MedicTableProps {
-  medicines: MedicineType[];
-  setMedicines: (medicines: MedicineType[]) => void;
+  medicines: Medicine[];
+  setMedicines: (medicines: Medicine[]) => void;
 }
 
 const {gridStyles} = componentStyles;
@@ -60,6 +60,7 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
   const [open, setOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [filteredMeds, setFilteredMeds] = useState<Medicine[]>(medicines);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -69,16 +70,11 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
     setOpen(false);
   };
 
-  const handleFormSubmit = async (newMedicine: MedicineType) => {
+  const handleFormSubmit = async (newMedicine: Medicine) => {
     setMedicines([...medicines, newMedicine]);
     setOpen(false);
     setOpenSnackbar(true);
     setSnackbarMsg('New medicine added successfully!');
-  };
-
-  const handleSearch = (query: string) => {
-    console.log('Search query:', query);
-    // Add logic to handle search (e.g., filter data, make an API call, etc.)
   };
 
   return (
@@ -96,10 +92,13 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
         />
       </BoxHead>
       <Box>
-        <SearchBar onSearch={handleSearch}></SearchBar>
+        <SearchBar
+          medicines={medicines}
+          setFilteredMeds={setFilteredMeds}
+        ></SearchBar>
       </Box>
       <DataGrid
-        rows={medicines}
+        rows={filteredMeds}
         columns={columns}
         initialState={{
           pagination: {
