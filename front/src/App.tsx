@@ -10,9 +10,19 @@ import {loadMedicines} from './utils';
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<MedicineType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadMedicines(setProducts);
+    const fetchMedicines = async () => {
+      try {
+        await loadMedicines(setProducts);
+      } catch (error) {
+        console.error('Error loading medicines:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMedicines();
   }, []);
 
   return (
@@ -24,7 +34,11 @@ const App: React.FC = () => {
             <Route
               path="/"
               element={
-                <MedicTable medicines={products} setMedicines={setProducts} />
+                loading ? (
+                  <p>Loading medicines...</p>
+                ) : (
+                  <MedicTable medicines={products} setMedicines={setProducts} />
+                )
               }
             />
             <Route
