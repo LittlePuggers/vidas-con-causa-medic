@@ -91,6 +91,19 @@ router.patch('/medicines/:id', async (req, res) => {
   }
 });
 
+// Delete medicine
+router.delete('/medicines/:id', async (req, res) => {
+  const {id} = req.params;
+  try {
+    const deleteMedicine = await prisma.medicine.delete({
+      where: {id: parseInt(id)},
+    });
+    res.status(201).json(deleteMedicine);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+});
+
 // Get instances of medicine
 router.get('/medicines/:id/items', async (req, res) => {
   const medicineId = parseInt(req.params.id);

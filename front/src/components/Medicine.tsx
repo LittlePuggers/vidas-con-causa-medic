@@ -56,9 +56,9 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
     fetchInstances(numberID);
   }, [numberID]);
 
-  if (inventory.length === 0) {
-    return <p>Loading inventory...</p>;
-  }
+  // if (inventory.length === 0) {
+  //   return <p>Loading inventory...</p>;
+  // }
   if (!product) {
     return <Typography variant="h5">Product not found</Typography>;
   }

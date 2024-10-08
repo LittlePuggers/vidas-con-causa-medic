@@ -30,7 +30,7 @@ model Instance {
   medicineId Int
   endDate    String
   quantity   Int
-  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
 
   @@index([medicineId], map: "Instance_medicineId_fkey")
 }

@@ -1,9 +1,13 @@
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
-import {Typography} from '@mui/material';
+import {Button, Fab, Typography} from '@mui/material';
 import {Medicine as MedicineType} from '../types/Medicine';
 import {DescriptionItem} from './DescriptionItem';
 import {useState} from 'react';
+import {ConfirmModal} from './ConfirmModal';
+import {deleteMedicine} from '../api';
+import {SnackbarAlert} from './SnackbarAlert';
+import {useNavigate} from 'react-router-dom';
 
 interface DescriptionListProps {
   medicineInfo: MedicineType;
@@ -21,6 +25,10 @@ export const DescriptionList = ({
   const [category, setCategory] = useState(medicineInfo.category);
   const [unit, setUnit] = useState(medicineInfo.unit);
 
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+
   const handleMedPropSave = (label: string, newValue: string) => {
     switch (label) {
       case 'concentration':
@@ -37,6 +45,30 @@ export const DescriptionList = ({
         break;
     }
     handleSave(label, newValue);
+  };
+
+  const returnHome = () => {
+    const navigate = useNavigate();
+    navigate('/');
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteMedicine(medicineInfo.id);
+      console.log('Medicine deleted:', medicineInfo.id);
+      // const updatedInventory = inventory.filter(
+      //   (instance) => instance.id !== instanceId
+      // );
+      // setUpdatedInventory(updatedInventory);
+      // handleClose();
+      setSnackbarMsg('Medicine deleted successfully!');
+      setOpenSnackbar(true);
+      setTimeout(returnHome, 10000);
+    } catch (error) {
+      console.log('Error deleting medicine', error);
+    }
+
+    setIsConfirmationOpen(false);
   };
 
   return (
@@ -66,6 +98,25 @@ export const DescriptionList = ({
           />
         </List>
       </nav>
+      <Button
+        color="warning"
+        variant="contained"
+        onClick={() => setIsConfirmationOpen(true)}
+      >
+        Eliminar medicina
+      </Button>
+      {isConfirmationOpen && (
+        <ConfirmModal
+          text="¿Estas seguro que deseas eliminar esta medicina?"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setIsConfirmationOpen(false)}
+        />
+      )}
+      <SnackbarAlert
+        open={openSnackbar}
+        setOpen={setOpenSnackbar}
+        msg={snackbarMsg}
+      ></SnackbarAlert>
     </Box>
   );
 };
