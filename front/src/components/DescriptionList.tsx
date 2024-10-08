@@ -47,10 +47,7 @@ export const DescriptionList = ({
     handleSave(label, newValue);
   };
 
-  const returnHome = () => {
-    const navigate = useNavigate();
-    navigate('/');
-  };
+  const navigate = useNavigate();
 
   const handleConfirmDelete = async () => {
     try {
@@ -61,9 +58,9 @@ export const DescriptionList = ({
       // );
       // setUpdatedInventory(updatedInventory);
       // handleClose();
-      setSnackbarMsg('Medicine deleted successfully!');
-      setOpenSnackbar(true);
-      setTimeout(returnHome, 10000);
+      navigate('/', {
+        state: {snackbarMsg: 'Medicine deleted successfully!'},
+      });
     } catch (error) {
       console.log('Error deleting medicine', error);
     }

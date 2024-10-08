@@ -1,11 +1,11 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import {Medicine} from '../types/Medicine.ts';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import componentStyles from './componentStyles';
 import {SearchBar} from './SearchBar.tsx';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {NewMedicineForm} from './NewMedicineForm';
 import {SnackbarAlert} from './SnackbarAlert.tsx';
 
@@ -61,6 +61,15 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
   const [filteredMeds, setFilteredMeds] = useState<Medicine[]>(medicines);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.snackbarMsg) {
+      setSnackbarMsg(location.state.snackbarMsg);
+      setOpenSnackbar(true);
+    }
+  }, [location.state]);
 
   const handleClickOpen = () => {
     setOpen(true);
