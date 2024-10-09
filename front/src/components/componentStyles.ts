@@ -1,4 +1,5 @@
 const gridStyles = {
+  // autoPageSize: 'true',
   height: '165%',
   backgroundColor: 'white',
   '& .MuiDataGrid-row:nth-of-type(odd)': {
@@ -15,7 +16,7 @@ const gridStyles = {
   '& .MuiDataGrid-columnHeaderTitle': {
     fontWeight: '400',
   },
-  '& .MuiDataGrid-scrollbar': {},
+  '.MuiDataGrid-scrollbar': {display: 'grid'},
 };
 
 const componentStyles = {
