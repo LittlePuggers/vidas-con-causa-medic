@@ -1,5 +1,5 @@
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {Medicine} from '../types/Medicine.ts';
 import {Box, Fab, Typography, styled} from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -48,7 +48,8 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
       field: 'stock',
       headerName: 'Stock',
       width: 90,
-      renderCell: (params) => `${params.row.stock} ${params.row.unit}`,
+      renderCell: (params) =>
+        `${params.row.stock} ${params.row.unit.toLowerCase()}`,
     },
     {
       field: 'bestUsedBy',
@@ -63,13 +64,25 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
   const [filteredMeds, setFilteredMeds] = useState<Medicine[]>(medicines);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.state && location.state.snackbarMsg) {
+    setFilteredMeds(medicines);
+  }, [medicines]);
+
+  useEffect(() => {
+    if (location.state?.snackbarMsg) {
       setSnackbarMsg(location.state.snackbarMsg);
       setOpenSnackbar(true);
+
+      const medicinesWithoutDeleted = medicines.filter(
+        (item) => item.id !== location.state.deletedId
+      );
+
+      setMedicines(medicinesWithoutDeleted);
+      navigate(location.pathname, {replace: true});
     }
-  }, [location.state]);
+  }, [location.state, medicines, setMedicines, navigate]);
 
   const handleClickOpen = () => {
     setOpen(true);

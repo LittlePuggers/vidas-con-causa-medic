@@ -59,7 +59,10 @@ export const DescriptionList = ({
       // setUpdatedInventory(updatedInventory);
       // handleClose();
       navigate('/', {
-        state: {snackbarMsg: 'Medicine deleted successfully!'},
+        state: {
+          snackbarMsg: 'Medicine deleted successfully!',
+          deletedId: medicineInfo.id,
+        },
       });
     } catch (error) {
       console.log('Error deleting medicine', error);
