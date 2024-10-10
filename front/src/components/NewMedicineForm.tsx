@@ -11,6 +11,7 @@ import {Box, Checkbox, ListItemText, MenuItem, Select} from '@mui/material';
 import {useState} from 'react';
 import {createMedicine} from '../api';
 import {Medicine} from '../types/Medicine';
+import {categories, instanceUnits} from '../utils';
 
 interface NewMedicineFormProps {
   open: boolean;
@@ -27,16 +28,6 @@ const RowBox = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
 }));
-
-const categories = [
-  'Antibiótico',
-  'Dolor',
-  'Parasiticida',
-  'Articulaciones',
-  'Oftálmico',
-];
-
-const instanceUnits = ['Tabletas', 'Mililitros', 'Gramos'];
 
 export const NewMedicineForm = ({
   open,

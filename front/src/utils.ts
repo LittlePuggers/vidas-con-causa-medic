@@ -11,3 +11,13 @@ export const loadInstances = async (id: number, setterFn: any) => {
   // console.log(response.data);
   setterFn(response.data);
 };
+
+export const categories = [
+  'Antibiótico',
+  'Dolor',
+  'Parasiticida',
+  'Articulaciones',
+  'Oftálmico',
+];
+
+export const instanceUnits = ['Tabletas', 'Mililitros', 'Gramos'];
