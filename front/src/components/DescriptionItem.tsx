@@ -7,6 +7,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import styled from '@emotion/styled';
+import {Autocomplete} from '@mui/material';
+import {categories, instanceUnits} from '../utils';
 
 const ItemText = styled(ListItemText)(() => ({
   display: 'flex',
@@ -34,33 +36,61 @@ export const DescriptionItem = ({
   value,
   onSave,
 }: DescriptionItemProps) => {
-  const [isEditing, setIsEditing] = useState(false); // Track whether the item is being edited
-  const [currentValue, setCurrentValue] = useState(value); // Track the current value of the item
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentValue, setCurrentValue] = useState(value);
 
   // Handle clicking the edit/save button
   const handleEditClick = () => {
     if (isEditing) {
-      onSave(label, currentValue); // Trigger save action when editing is done
+      onSave(label, currentValue);
     }
-    setIsEditing(!isEditing); // Toggle edit mode
+    setIsEditing(!isEditing);
   };
 
   return (
     <>
       <ListItem disablePadding>
         <ItemText
+          sx={{
+            textAlign: 'right',
+          }}
           primary={label}
           secondary={
-            isEditing ? (
+            isEditing && label !== 'Categoría' && label !== 'Unidades' ? (
               <TextField
+                id={label}
                 value={currentValue}
                 onChange={(e) => setCurrentValue(e.target.value)}
                 variant="outlined"
                 size="small"
-                // sx={{width: '60%'}} // Adjust width as needed
+                sx={{width: '80%', minWidth: 160}}
+              />
+            ) : isEditing && (label === 'Categoría' || label === 'Unidades') ? (
+              <Autocomplete
+                id={label}
+                freeSolo
+                sx={{width: '100%', minWidth: 160}}
+                options={
+                  label === 'Categoría'
+                    ? categories.map((category) => category)
+                    : instanceUnits.map((unit) => unit)
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    value={currentValue}
+                    onChange={(e) => setCurrentValue(e.target.value)}
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    sx={{minWidth: 160}}
+                  />
+                )}
               />
             ) : (
-              currentValue
+              <span style={{textAlign: 'right', width: '100%'}}>
+                {currentValue}
+              </span>
             )
           }
         />
