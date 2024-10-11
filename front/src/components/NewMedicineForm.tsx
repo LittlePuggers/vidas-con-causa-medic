@@ -200,6 +200,7 @@ export const NewMedicineForm = ({
               >
                 <MenuItem value={'mg'}>Miligramos</MenuItem>
                 <MenuItem value={'ml'}>Mililitros</MenuItem>
+                <MenuItem value={'%'}>%</MenuItem>
               </Select>
             </Box>
           </RowBox>
