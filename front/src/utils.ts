@@ -13,11 +13,11 @@ export const loadInstances = async (id: number, setterFn: any) => {
 };
 
 export const categories = [
-  'Antibiótico',
-  'Dolor',
-  'Parasiticida',
-  'Articulaciones',
-  'Oftálmico',
+  {id: 1, optionName: 'Antibiótico'},
+  {id: 2, optionName: 'Dolor'},
+  {id: 3, optionName: 'Parasiticida'},
+  {id: 4, optionName: 'Articulaciones'},
+  {id: 5, optionName: 'Oftálmico'},
 ];
 
 export const instanceUnits = ['Tabletas', 'Mililitros', 'Gramos'];

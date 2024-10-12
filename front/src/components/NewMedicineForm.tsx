@@ -12,6 +12,7 @@ import {useState} from 'react';
 import {createMedicine} from '../api';
 import {Medicine} from '../types/Medicine';
 import {categories, instanceUnits} from '../utils';
+import {AutocompleteAdd} from './AutocompleteAdd';
 
 interface NewMedicineFormProps {
   open: boolean;
@@ -143,7 +144,7 @@ export const NewMedicineForm = ({
           />
 
           <DialogContentStyledText>Categoría</DialogContentStyledText>
-          <Select
+          {/* <Select
             labelId="demo-multiple-checkbox-label"
             id="category"
             name="category"
@@ -162,7 +163,8 @@ export const NewMedicineForm = ({
                 <ListItemText primary={categoryEl} />
               </MenuItem>
             ))}
-          </Select>
+          </Select> */}
+          <AutocompleteAdd options={categories} />
 
           <DialogContentStyledText>Componentes</DialogContentStyledText>
           <TextField
