@@ -101,6 +101,10 @@ export const Inventory = ({
     };
   }, []);
 
+  useEffect(() => {
+    setUpdatedInventory(inventory);
+  }, [inventory]);
+
   const handleChangeQty = (instance: Instance, change: 'add' | 'remove') => {
     const instanceId = instance.id;
 

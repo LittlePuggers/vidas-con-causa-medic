@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -31,7 +30,7 @@ const Item = styled(Paper)(({theme}) => ({
   width: '100%',
 }));
 
-export const Medicine: React.FC<MedicineProps> = ({products}) => {
+export const Medicine = ({products}: MedicineProps) => {
   const {id} = useParams();
   const numberID = id ? +id : 0;
   const product = products.find((product) => product.id.toString() === id);
@@ -46,14 +45,14 @@ export const Medicine: React.FC<MedicineProps> = ({products}) => {
   const [snackbarMsg, setSnackbarMsg] = useState('');
 
   useEffect(() => {
-    const fetchInstances = async (id: number) => {
+    const fetchInstances = async () => {
       try {
         await loadInstances(numberID, setInventory);
       } catch (error) {
         console.error('Error loading instances:', error);
       }
     };
-    fetchInstances(numberID);
+    if (numberID) fetchInstances();
   }, [numberID]);
 
   // if (inventory.length === 0) {
