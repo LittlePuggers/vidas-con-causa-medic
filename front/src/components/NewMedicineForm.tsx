@@ -221,8 +221,8 @@ export const NewMedicineForm = ({
             displayEmpty
           >
             {instanceUnits.map((instanceUnit) => (
-              <MenuItem key={instanceUnit} value={instanceUnit}>
-                <ListItemText primary={instanceUnit} />
+              <MenuItem key={instanceUnit.id} value={instanceUnit.optionName}>
+                <ListItemText primary={instanceUnit.optionName} />
               </MenuItem>
             ))}
           </Select>

@@ -20,4 +20,8 @@ export const categories = [
   {id: 5, optionName: 'Oftálmico'},
 ];
 
-export const instanceUnits = ['Tabletas', 'Mililitros', 'Gramos'];
+export const instanceUnits = [
+  {id: 1, optionName: 'Tabletas'},
+  {id: 2, optionName: 'Mililitros'},
+  {id: 3, optionName: 'Gramos'},
+];
