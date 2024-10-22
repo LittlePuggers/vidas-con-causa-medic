@@ -8,6 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Autocomplete, {createFilterOptions} from '@mui/material/Autocomplete';
 import {useState} from 'react';
+import {createCategory} from '../api';
 
 interface OptionType {
   inputValue?: string;
@@ -39,6 +40,7 @@ export const AutocompleteAdd = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setValue({id: 0, optionName: dialogValue.optionName});
+    // createCategory(dialogValue.optionName)
     handleClose();
   };
 

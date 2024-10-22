@@ -205,4 +205,19 @@ router.delete('/medicines/:medicineId/items/:id', async (req, res) => {
   }
 });
 
+// Save new category
+router.post('/categories', async (req, res) => {
+  const {name} = req.body;
+  try {
+    const newCategory = await prisma.category.create({
+      data: {
+        name,
+      },
+    });
+    res.status(201).json(newMedicine);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+});
+
 export default router;

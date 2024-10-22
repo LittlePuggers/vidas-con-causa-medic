@@ -34,3 +34,8 @@ model Instance {
 
   @@index([medicineId], map: "Instance_medicineId_fkey")
 }
+
+model Category {
+  id    Int   @id @default(autoincrement())
+  name  String
+}
