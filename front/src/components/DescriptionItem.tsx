@@ -5,8 +5,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import {Autocomplete} from '@mui/material';
 import {categories, instanceUnits} from '../utils';
+import {AutocompleteAdd} from './AutocompleteAdd';
 
 interface DescriptionItemProps {
   label: string;
@@ -56,26 +56,23 @@ export const DescriptionItem = ({
                 sx={{width: '80%', minWidth: 160}}
               />
             ) : isEditing && (label === 'Categoría' || label === 'Unidades') ? (
-              <Autocomplete
-                id={label}
-                freeSolo
-                sx={{width: '100%', minWidth: 160}}
-                options={
-                  label === 'Categoría'
-                    ? categories.map((category) => category)
-                    : instanceUnits.map((unit) => unit)
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    value={currentValue}
-                    onChange={(e) => setCurrentValue(e.target.value)}
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    sx={{minWidth: 160}}
-                  />
-                )}
+              <AutocompleteAdd
+                // id={label}
+                // freeSolo
+                style={{width: '100%', minWidth: 160}}
+                size="small"
+                options={label === 'Categoría' ? categories : instanceUnits}
+                // renderInput={(params) => (
+                //   <TextField
+                //     {...params}
+                //     value={currentValue}
+                //     onChange={(e) => setCurrentValue(e.target.value)}
+                //     variant="outlined"
+                //     size="small"
+                //     fullWidth
+                //     sx={{minWidth: 160}}
+                //   />
+                // )}
               />
             ) : (
               <span style={{textAlign: 'right', width: '100%'}}>

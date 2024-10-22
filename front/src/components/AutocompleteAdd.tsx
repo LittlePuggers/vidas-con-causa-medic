@@ -16,11 +16,17 @@ interface OptionType {
 }
 interface AutocompleteAddProps {
   options: OptionType[];
+  style?: Object;
+  size?: 'small' | 'medium';
 }
 
 const filter = createFilterOptions<OptionType>();
 
-export const AutocompleteAdd = ({options}: AutocompleteAddProps) => {
+export const AutocompleteAdd = ({
+  options,
+  style,
+  size,
+}: AutocompleteAddProps) => {
   const [value, setValue] = useState<OptionType | null>(null);
   const [open, toggleOpen] = useState(false);
   const [dialogValue, setDialogValue] = useState({optionName: ''});
@@ -46,6 +52,8 @@ export const AutocompleteAdd = ({options}: AutocompleteAddProps) => {
   return (
     <>
       <Autocomplete
+        sx={style}
+        size={size}
         value={value}
         onChange={(event, newValue) => {
           //   if (newValue && typeof newValue === 'object') {
@@ -114,7 +122,6 @@ export const AutocompleteAdd = ({options}: AutocompleteAddProps) => {
             </li>
           );
         }}
-        sx={{width: 300}}
         freeSolo
         renderInput={(params) => <TextField {...params} />}
       />

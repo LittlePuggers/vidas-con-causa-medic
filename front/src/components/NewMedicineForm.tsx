@@ -164,7 +164,7 @@ export const NewMedicineForm = ({
               </MenuItem>
             ))}
           </Select> */}
-          <AutocompleteAdd options={categories} />
+          <AutocompleteAdd options={categories} style={{width: 300}} />
 
           <DialogContentStyledText>Componentes</DialogContentStyledText>
           <TextField
