@@ -1,29 +1,12 @@
 import {useState} from 'react';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import styled from '@emotion/styled';
 import {Autocomplete} from '@mui/material';
 import {categories, instanceUnits} from '../utils';
-
-const ItemText = styled(ListItemText)(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'baseline',
-  '& .MuiListItemText-primary': {
-    fontSize: '1em',
-    color: 'navy',
-    paddingLeft: '1em',
-  },
-  '& .MuiListItemText-secondary': {
-    fontSize: '1.2em',
-    paddingRight: '1em',
-  },
-}));
 
 interface DescriptionItemProps {
   label: string;
@@ -50,13 +33,20 @@ export const DescriptionItem = ({
   return (
     <>
       <ListItem disablePadding>
-        <ItemText
-          sx={{
+        <div
+          style={{
             textAlign: 'right',
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
           }}
-          primary={label}
-          secondary={
-            isEditing && label !== 'Categoría' && label !== 'Unidades' ? (
+        >
+          <strong style={{fontSize: '1em', color: 'navy', paddingLeft: '1em'}}>
+            {label}
+          </strong>
+          <div style={{fontSize: '1.2em', paddingRight: '1em'}}>
+            {isEditing && label !== 'Categoría' && label !== 'Unidades' ? (
               <TextField
                 id={label}
                 value={currentValue}
@@ -91,9 +81,9 @@ export const DescriptionItem = ({
               <span style={{textAlign: 'right', width: '100%'}}>
                 {currentValue}
               </span>
-            )
-          }
-        />
+            )}
+          </div>
+        </div>
         <IconButton edge="end" aria-label="edit" onClick={handleEditClick}>
           {isEditing ? <SaveIcon /> : <EditIcon />}
         </IconButton>
