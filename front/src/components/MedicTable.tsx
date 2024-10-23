@@ -8,10 +8,12 @@ import {SearchBar} from './SearchBar.tsx';
 import {useEffect, useState} from 'react';
 import {NewMedicineForm} from './NewMedicineForm';
 import {SnackbarAlert} from './SnackbarAlert.tsx';
+import {Category} from '../types/Category.ts';
 
 interface MedicTableProps {
   medicines: Medicine[];
   setMedicines: (medicines: Medicine[]) => void;
+  categories: Category[];
 }
 
 const {gridStyles} = componentStyles;
@@ -23,7 +25,11 @@ const BoxHead = styled(Box)(() => ({
   padding: '1em 2em',
 }));
 
-const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
+const MedicTable: React.FC<MedicTableProps> = ({
+  medicines,
+  setMedicines,
+  categories,
+}) => {
   const columns: GridColDef[] = [
     {field: 'id', headerName: 'ID', width: 50},
     {
@@ -111,6 +117,7 @@ const MedicTable: React.FC<MedicTableProps> = ({medicines, setMedicines}) => {
           open={open}
           handleClose={handleClose}
           onSubmit={handleFormSubmit}
+          categories={categories}
         />
       </BoxHead>
       <Box>

@@ -13,7 +13,7 @@ import {createCategory} from '../api';
 interface OptionType {
   inputValue?: string;
   id: number;
-  optionName: string;
+  name: string;
 }
 interface AutocompleteAddProps {
   options: OptionType[];
@@ -30,16 +30,16 @@ export const AutocompleteAdd = ({
 }: AutocompleteAddProps) => {
   const [value, setValue] = useState<OptionType | null>(null);
   const [open, toggleOpen] = useState(false);
-  const [dialogValue, setDialogValue] = useState({optionName: ''});
+  const [dialogValue, setDialogValue] = useState({name: ''});
 
   const handleClose = () => {
-    setDialogValue({optionName: ''});
+    setDialogValue({name: ''});
     toggleOpen(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setValue({id: 0, optionName: dialogValue.optionName});
+    setValue({id: 0, name: dialogValue.name});
     // createCategory(dialogValue.optionName)
     handleClose();
   };
@@ -76,13 +76,13 @@ export const AutocompleteAdd = ({
             setTimeout(() => {
               toggleOpen(true);
               setDialogValue({
-                optionName: newValue,
+                name: newValue,
               });
             });
           } else if (newValue && newValue.inputValue) {
             toggleOpen(true);
             setDialogValue({
-              optionName: newValue.inputValue,
+              name: newValue.inputValue,
             });
           } else {
             setValue(newValue);
@@ -95,7 +95,7 @@ export const AutocompleteAdd = ({
             filtered.push({
               inputValue: params.inputValue,
               id: 10, // ALWAYS SET TO 10 JUST AS PLACEHOLDER!!!!
-              optionName: `Agregar "${params.inputValue}"`,
+              name: `Agregar "${params.inputValue}"`,
             });
           }
 
@@ -111,7 +111,7 @@ export const AutocompleteAdd = ({
           if (option.inputValue) {
             return option.inputValue;
           }
-          return option.optionName;
+          return option.name;
         }}
         selectOnFocus
         clearOnBlur
@@ -120,7 +120,7 @@ export const AutocompleteAdd = ({
           //   const {key, ...optionProps} = props;
           return (
             <li {...props} key={option.id}>
-              {option.optionName}
+              {option.name}
             </li>
           );
         }}
@@ -138,11 +138,11 @@ export const AutocompleteAdd = ({
               autoFocus
               margin="dense"
               id="name"
-              value={dialogValue.optionName}
+              value={dialogValue.name}
               onChange={(event) =>
                 setDialogValue({
                   ...dialogValue,
-                  optionName: event.target.value,
+                  name: event.target.value,
                 })
               }
               //   label="title"

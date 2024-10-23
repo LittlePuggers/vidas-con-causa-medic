@@ -5,19 +5,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
-import {categories, instanceUnits} from '../utils';
+import {instanceUnits} from '../utils';
 import {AutocompleteAdd} from './AutocompleteAdd';
+import {Category} from '../types/Category';
 
 interface DescriptionItemProps {
   label: string;
   value: string;
   onSave: (arg0: string, arg1: string) => void;
+  categories: Category[];
 }
 
 export const DescriptionItem = ({
   label,
   value,
   onSave,
+  categories,
 }: DescriptionItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);

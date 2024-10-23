@@ -13,9 +13,11 @@ import {useEffect, useState} from 'react';
 import {Instance} from '../types/Instance';
 import {updateMedicine} from '../api';
 import {SnackbarAlert} from './SnackbarAlert';
+import {Category} from '../types/Category';
 
 interface MedicineProps {
   products: MedicineType[];
+  categories: Category[];
 }
 
 const Item = styled(Paper)(({theme}) => ({
@@ -30,7 +32,7 @@ const Item = styled(Paper)(({theme}) => ({
   width: '100%',
 }));
 
-export const Medicine = ({products}: MedicineProps) => {
+export const Medicine = ({products, categories}: MedicineProps) => {
   const {id} = useParams();
   const numberID = id ? +id : 0;
   const product = products.find((product) => product.id.toString() === id);
@@ -113,6 +115,7 @@ export const Medicine = ({products}: MedicineProps) => {
               <DescriptionList
                 medicineInfo={product}
                 handleSave={handleMedEditSave}
+                categories={categories}
               />
             </Item>
           </Grid>

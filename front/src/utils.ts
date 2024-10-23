@@ -1,4 +1,4 @@
-import {getInstances, getMedicines} from './api';
+import {getCategories, getInstances, getMedicines} from './api';
 
 export const loadMedicines = async (setterFn: any) => {
   const response = await getMedicines();
@@ -12,16 +12,21 @@ export const loadInstances = async (id: number, setterFn: any) => {
   setterFn(response.data);
 };
 
-export const categories = [
-  {id: 1, optionName: 'Antibiótico'},
-  {id: 2, optionName: 'Dolor'},
-  {id: 3, optionName: 'Parasiticida'},
-  {id: 4, optionName: 'Articulaciones'},
-  {id: 5, optionName: 'Oftálmico'},
-];
+export const loadCategories = async (setterFn: any) => {
+  const response = await getCategories();
+  setterFn(response.data);
+};
+
+// export const categories = [
+//   {id: 1, optionName: 'Antibiótico'},
+//   {id: 2, optionName: 'Dolor'},
+//   {id: 3, optionName: 'Parasiticida'},
+//   {id: 4, optionName: 'Articulaciones'},
+//   {id: 5, optionName: 'Oftálmico'},
+// ];
 
 export const instanceUnits = [
-  {id: 1, optionName: 'Tabletas'},
-  {id: 2, optionName: 'Mililitros'},
-  {id: 3, optionName: 'Gramos'},
+  {id: 1, name: 'Tabletas'},
+  {id: 2, name: 'Mililitros'},
+  {id: 3, name: 'Gramos'},
 ];

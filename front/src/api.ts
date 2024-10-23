@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios';
 import {Medicine} from './types/Medicine';
+import {Category} from './types/Category';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
@@ -42,6 +43,9 @@ export const updateInstance = (
 
 export const deleteInstance = (medicineId: number, id: number): Promise<void> =>
   api.delete(`/medicines/${medicineId}/items/${id}`);
+
+export const getCategories = (): Promise<AxiosResponse<Category[]>> =>
+  api.get('/categories');
 
 export const createCategory = (data: String): Promise<AxiosResponse<String>> =>
   api.post('/categories', data);

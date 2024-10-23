@@ -205,6 +205,20 @@ router.delete('/medicines/:medicineId/items/:id', async (req, res) => {
   }
 });
 
+// Get all categories
+router.get('/categories', async (req, res) => {
+  try {
+    const categories = await prisma.category.findMany();
+    console.log(categories);
+    res.json(categories);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({error: 'An error occurred while fetching categroies.'});
+  }
+});
+
 // Save new category
 router.post('/categories', async (req, res) => {
   const {name} = req.body;

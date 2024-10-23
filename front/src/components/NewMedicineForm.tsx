@@ -11,13 +11,15 @@ import {Box, Checkbox, ListItemText, MenuItem, Select} from '@mui/material';
 import {useState} from 'react';
 import {createMedicine} from '../api';
 import {Medicine} from '../types/Medicine';
-import {categories, instanceUnits} from '../utils';
+import {instanceUnits} from '../utils';
 import {AutocompleteAdd} from './AutocompleteAdd';
+import {Category} from '../types/Category';
 
 interface NewMedicineFormProps {
   open: boolean;
   handleClose: () => void;
   onSubmit: (newMedicine: Medicine) => void;
+  categories: Category[];
 }
 
 const DialogContentStyledText = styled(DialogContentText)(() => ({
@@ -34,6 +36,7 @@ export const NewMedicineForm = ({
   open,
   handleClose,
   onSubmit,
+  categories,
 }: NewMedicineFormProps) => {
   const [newMedicineData, setNewMedicineData] = useState({
     name: '',
@@ -221,8 +224,8 @@ export const NewMedicineForm = ({
             displayEmpty
           >
             {instanceUnits.map((instanceUnit) => (
-              <MenuItem key={instanceUnit.id} value={instanceUnit.optionName}>
-                <ListItemText primary={instanceUnit.optionName} />
+              <MenuItem key={instanceUnit.id} value={instanceUnit.name}>
+                <ListItemText primary={instanceUnit.name} />
               </MenuItem>
             ))}
           </Select>

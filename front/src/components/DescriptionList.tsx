@@ -8,15 +8,18 @@ import {ConfirmModal} from './ConfirmModal';
 import {deleteMedicine} from '../api';
 import {SnackbarAlert} from './SnackbarAlert';
 import {useNavigate} from 'react-router-dom';
+import {Category} from '../types/Category';
 
 interface DescriptionListProps {
   medicineInfo: MedicineType;
   handleSave: (label: string, newValue: string) => void;
+  categories: Category[];
 }
 
 export const DescriptionList = ({
   medicineInfo,
   handleSave,
+  categories,
 }: DescriptionListProps) => {
   const [concentration, setConcentration] = useState(
     medicineInfo.concentration
@@ -80,21 +83,25 @@ export const DescriptionList = ({
             label="Concentración"
             value={medicineInfo.concentration}
             onSave={handleMedPropSave}
+            categories={categories}
           />
           <DescriptionItem
             label="Componentes"
             value={medicineInfo.components}
             onSave={handleMedPropSave}
+            categories={categories}
           />
           <DescriptionItem
             label="Categoría"
             value={medicineInfo.category}
             onSave={handleMedPropSave}
+            categories={categories}
           />
           <DescriptionItem
             label="Unidades"
             value={medicineInfo.unit}
             onSave={handleMedPropSave}
+            categories={categories}
           />
         </List>
       </nav>

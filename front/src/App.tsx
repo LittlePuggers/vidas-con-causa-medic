@@ -6,11 +6,13 @@ import {Medicine as MedicineType} from './types/Medicine';
 import Header from './components/Header';
 import {Medicine} from './components/Medicine';
 import MedicTable from './components/MedicTable';
-import {loadMedicines} from './utils';
+import {loadCategories, loadMedicines} from './utils';
+import {Category} from './types/Category';
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<MedicineType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchMedicines = async () => {
@@ -22,7 +24,11 @@ const App: React.FC = () => {
         setLoading(false);
       }
     };
+    const fetchCategories = async () => {
+      await loadCategories(setCategories);
+    };
     fetchMedicines();
+    fetchCategories();
   }, []);
 
   return (
@@ -37,13 +43,17 @@ const App: React.FC = () => {
                 loading ? (
                   <p>Loading medicines...</p>
                 ) : (
-                  <MedicTable medicines={products} setMedicines={setProducts} />
+                  <MedicTable
+                    medicines={products}
+                    setMedicines={setProducts}
+                    categories={categories}
+                  />
                 )
               }
             />
             <Route
               path="/medicine/:id"
-              element={<Medicine products={products} />}
+              element={<Medicine products={products} categories={categories} />}
             />
           </Routes>
         </Router>
