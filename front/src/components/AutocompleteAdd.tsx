@@ -12,7 +12,7 @@ import {createCategory} from '../api';
 
 interface OptionType {
   inputValue?: string;
-  id: number;
+  id?: number;
   name: string;
 }
 interface AutocompleteAddProps {
@@ -37,19 +37,24 @@ export const AutocompleteAdd = ({
     toggleOpen(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setValue({id: 0, name: dialogValue.name});
-    // createCategory(dialogValue.optionName)
-    handleClose();
+    // setValue({id: 0, name: dialogValue.name});
+    try {
+      const response = await createCategory(dialogValue);
+      console.log('Category saved: ', response.data);
+      handleClose();
+    } catch (error) {
+      console.error('Error saving category: ', error);
+    }
   };
 
-  React.useEffect(() => {
-    const conso = async () => {
-      console.log(value);
-    };
-    conso();
-  }, [value]);
+  // React.useEffect(() => {
+  //   const conso = async () => {
+  //     console.log(value);
+  //   };
+  //   conso();
+  // }, [value]);
 
   return (
     <>

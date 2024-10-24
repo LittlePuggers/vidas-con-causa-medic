@@ -47,5 +47,6 @@ export const deleteInstance = (medicineId: number, id: number): Promise<void> =>
 export const getCategories = (): Promise<AxiosResponse<Category[]>> =>
   api.get('/categories');
 
-export const createCategory = (data: String): Promise<AxiosResponse<String>> =>
-  api.post('/categories', data);
+export const createCategory = (data: {
+  name: string;
+}): Promise<AxiosResponse<Category>> => api.post('/categories', data);

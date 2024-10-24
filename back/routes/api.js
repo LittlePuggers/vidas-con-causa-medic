@@ -224,11 +224,9 @@ router.post('/categories', async (req, res) => {
   const {name} = req.body;
   try {
     const newCategory = await prisma.category.create({
-      data: {
-        name,
-      },
+      data: {name},
     });
-    res.status(201).json(newMedicine);
+    res.status(201).json(newCategory);
   } catch (error) {
     res.status(400).json({error: error.message});
   }

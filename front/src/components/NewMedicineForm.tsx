@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {dialogTitleStyles} from './componentStyles';
 import styled from '@emotion/styled';
-import {Box, Checkbox, ListItemText, MenuItem, Select} from '@mui/material';
+import {Box, ListItemText, MenuItem, Select} from '@mui/material';
 import {useState} from 'react';
 import {createMedicine} from '../api';
 import {Medicine} from '../types/Medicine';
