@@ -1,4 +1,3 @@
-import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -16,34 +15,41 @@ interface OptionType {
   name: string;
 }
 interface AutocompleteAddProps {
-  options: OptionType[];
+  initialOptions: OptionType[];
   style?: Object;
   size?: 'small' | 'medium';
+  setNewValue: any;
 }
 
 const filter = createFilterOptions<OptionType>();
 
 export const AutocompleteAdd = ({
-  options,
+  initialOptions,
   style,
   size,
+  setNewValue,
 }: AutocompleteAddProps) => {
-  const [value, setValue] = useState<OptionType | null>(null);
+  const [options, setOptions] = useState(initialOptions);
   const [open, toggleOpen] = useState(false);
   const [dialogValue, setDialogValue] = useState({name: ''});
+  const [value, setValue] = useState<OptionType | null>(null);
 
   const handleClose = () => {
     setDialogValue({name: ''});
     toggleOpen(false);
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: {preventDefault: () => void}) => {
     event.preventDefault();
     // setValue({id: 0, name: dialogValue.name});
     try {
       const response = await createCategory(dialogValue);
       console.log('Category saved: ', response.data);
+      setOptions([...options, response.data]);
+      console.log('Set options to:', [...options, response.data]);
+      setValue(dialogValue);
       handleClose();
+      setNewValue(dialogValue);
     } catch (error) {
       console.error('Error saving category: ', error);
     }
@@ -76,6 +82,7 @@ export const AutocompleteAdd = ({
           //       optionName: typeof newValue === 'string' ? newValue : '',
           //     });
           //   }
+          console.log(newValue);
           if (typeof newValue === 'string') {
             // timeout to avoid instant validation of the dialog's form.
             setTimeout(() => {
@@ -91,6 +98,7 @@ export const AutocompleteAdd = ({
             });
           } else {
             setValue(newValue);
+            setNewValue(newValue?.name);
           }
         }}
         filterOptions={(options, params) => {
@@ -99,7 +107,6 @@ export const AutocompleteAdd = ({
           if (params.inputValue !== '') {
             filtered.push({
               inputValue: params.inputValue,
-              id: 10, // ALWAYS SET TO 10 JUST AS PLACEHOLDER!!!!
               name: `Agregar "${params.inputValue}"`,
             });
           }
@@ -133,34 +140,32 @@ export const AutocompleteAdd = ({
         renderInput={(params) => <TextField {...params} />}
       />
       <Dialog open={open} onClose={handleClose}>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>Agregar nueva categoría</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Hace falta alguna categoría en la lista? Agrégala!
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              value={dialogValue.name}
-              onChange={(event) =>
-                setDialogValue({
-                  ...dialogValue,
-                  name: event.target.value,
-                })
-              }
-              //   label="title"
-              type="text"
-              variant="standard"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">Agregar</Button>
-          </DialogActions>
-        </form>
+        <DialogTitle>Agregar nueva categoría</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Hace falta alguna categoría en la lista? Agrégala!
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            value={dialogValue.name}
+            onChange={(event) =>
+              setDialogValue({
+                ...dialogValue,
+                name: event.target.value,
+              })
+            }
+            //   label="title"
+            type="text"
+            variant="standard"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleSubmit}>Agregar</Button>
+        </DialogActions>
       </Dialog>
     </>
   );

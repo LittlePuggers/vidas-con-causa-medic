@@ -57,7 +57,9 @@ export const NewMedicineForm = ({
 
   const handleCategoryChange = (event: {target: {name: any; value: any}}) => {
     const {name, value} = event.target;
+    console.log(name, value);
     if (name === 'category') {
+      console.log('Type of category value: ', typeof value);
       setSelectedCategories(
         typeof value === 'string' ? value.split(', ') : value
       );
@@ -86,12 +88,14 @@ export const NewMedicineForm = ({
 
   const handleSubmit = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
+    console.log(selectedCategories);
+    // const categoryString = selectedCategories.join(', ');
     const newMedicineData2 = {
       name: newMedicineData.name,
       components: newMedicineData.components,
       concentration:
         newMedicineData.concNumber + ' ' + newMedicineData.concUnit,
-      category: selectedCategories.join(', '),
+      category: selectedCategories.toString(),
       unit: selectedInstanceUnit,
       stock: 0,
       bestUsedBy: '',
@@ -99,7 +103,7 @@ export const NewMedicineForm = ({
 
     if (
       !newMedicineData2.name.trim() ||
-      !selectedCategories.length ||
+      !newMedicineData2.category.trim() ||
       !newMedicineData2.components.trim() ||
       !newMedicineData2.concentration.trim() ||
       !newMedicineData2.unit.trim()
@@ -167,7 +171,11 @@ export const NewMedicineForm = ({
               </MenuItem>
             ))}
           </Select> */}
-          <AutocompleteAdd options={categories} style={{width: 300}} />
+          <AutocompleteAdd
+            initialOptions={categories}
+            style={{width: 300}}
+            setNewValue={setSelectedCategories}
+          />
 
           <DialogContentStyledText>Componentes</DialogContentStyledText>
           <TextField
@@ -248,7 +256,7 @@ export const NewMedicineForm = ({
           }}
           disabled={
             !newMedicineData.name ||
-            selectedCategories.length === 0 ||
+            !selectedCategories.length ||
             !newMedicineData.components ||
             !newMedicineData.concNumber ||
             !newMedicineData.concUnit
