@@ -24,6 +24,8 @@ export const DescriptionItem = ({
 }: DescriptionItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedInstanceUnits, setSelectedInstanceUnits] = useState('');
 
   // Handle clicking the edit/save button
   const handleEditClick = () => {
@@ -64,7 +66,14 @@ export const DescriptionItem = ({
                 // freeSolo
                 style={{width: '100%', minWidth: 160}}
                 size="small"
-                options={label === 'Categoría' ? categories : instanceUnits}
+                initialOptions={
+                  label === 'Categoría' ? categories : instanceUnits
+                }
+                setNewValue={
+                  label === 'Categoría'
+                    ? setSelectedCategories
+                    : setSelectedInstanceUnits
+                }
                 // renderInput={(params) => (
                 //   <TextField
                 //     {...params}
