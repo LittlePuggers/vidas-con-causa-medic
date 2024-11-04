@@ -32,7 +32,7 @@ export const AutocompleteAdd = ({
   const [options, setOptions] = useState(initialOptions);
   const [open, toggleOpen] = useState(false);
   const [dialogValue, setDialogValue] = useState({name: ''});
-  const [value, setValue] = useState<OptionType | null>(null);
+  const [value, setValue] = useState<OptionType[]>([]);
 
   const handleClose = () => {
     setDialogValue({name: ''});
@@ -41,64 +41,51 @@ export const AutocompleteAdd = ({
 
   const handleSubmit = async (event: {preventDefault: () => void}) => {
     event.preventDefault();
-    // setValue({id: 0, name: dialogValue.name});
     try {
       const response = await createCategory(dialogValue);
-      console.log('Category saved: ', response.data);
-      setOptions([...options, response.data]);
-      console.log('Set options to:', [...options, response.data]);
-      setValue(dialogValue);
+      const newCategory = response.data;
+      console.log('Category saved: ', newCategory);
+      setOptions([...options, newCategory]);
+      console.log('Set options to:', [...options, newCategory]);
+      setValue([...value, newCategory]);
       handleClose();
-      setNewValue(dialogValue);
+      setNewValue([...value, newCategory]);
     } catch (error) {
       console.error('Error saving category: ', error);
     }
   };
 
-  // React.useEffect(() => {
-  //   const conso = async () => {
-  //     console.log(value);
-  //   };
-  //   conso();
-  // }, [value]);
+  const isOptionType = (item: any): item is OptionType => {
+    return typeof item === 'object' && item !== null && 'inputValue' in item;
+  };
 
   return (
     <>
       <Autocomplete
+        multiple
         sx={style}
         size={size}
         value={value}
         onChange={(event, newValue) => {
-          //   if (newValue && typeof newValue === 'object') {
-          //     const {id, optionName} = newValue as OptionType; // Ensure it's OptionType
-          //     setValue({
-          //       id: id,
-          //       optionName: optionName,
-          //     });
-          //   } else {
-          //     // Handle case when newValue is string or null
-          //     setValue({
-          //       id: 10,
-          //       optionName: typeof newValue === 'string' ? newValue : '',
-          //     });
-          //   }
-          console.log(newValue);
           if (typeof newValue === 'string') {
-            // timeout to avoid instant validation of the dialog's form.
             setTimeout(() => {
               toggleOpen(true);
               setDialogValue({
                 name: newValue,
               });
             });
-          } else if (newValue && newValue.inputValue) {
+          } else if (
+            Array.isArray(newValue) &&
+            newValue.length > 0 &&
+            isOptionType(newValue[newValue.length - 1])
+          ) {
             toggleOpen(true);
             setDialogValue({
-              name: newValue.inputValue,
+              name: (newValue[newValue.length - 1] as OptionType).inputValue!,
             });
           } else {
-            setValue(newValue);
-            setNewValue(newValue?.name);
+            setValue(newValue as OptionType[]);
+            setNewValue(newValue as OptionType[]);
           }
         }}
         filterOptions={(options, params) => {
@@ -113,29 +100,19 @@ export const AutocompleteAdd = ({
 
           return filtered;
         }}
-        id="free-solo-dialog-demo"
+        id="multiple-free-solo-dialog"
         options={options}
-        getOptionLabel={(option) => {
-          // for example value selected with enter, right from the input
-          if (typeof option === 'string') {
-            return option;
-          }
-          if (option.inputValue) {
-            return option.inputValue;
-          }
-          return option.name;
-        }}
+        getOptionLabel={(option) =>
+          typeof option === 'string' ? option : option.name
+        }
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
-        renderOption={(props, option) => {
-          //   const {key, ...optionProps} = props;
-          return (
-            <li {...props} key={option.id}>
-              {option.name}
-            </li>
-          );
-        }}
+        renderOption={(props, option) => (
+          <li {...props} key={option.id}>
+            {option.name}
+          </li>
+        )}
         freeSolo
         renderInput={(params) => <TextField {...params} />}
       />
@@ -156,7 +133,6 @@ export const AutocompleteAdd = ({
                 name: event.target.value,
               })
             }
-            //   label="title"
             type="text"
             variant="standard"
             fullWidth
